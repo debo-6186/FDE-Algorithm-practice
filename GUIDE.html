@@ -1,0 +1,2100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meta FDE Assessment Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --ground: #F2F4F6;
+  --surface: #FFFFFF;
+  --surface-2: #E6EBEF;
+  --ink: #121B24;
+  --ink-2: #34424F;
+  --muted: #5D6B78;
+  --rule: #D5DDE4;
+  --accent: #A8620C;
+  --accent-ink: #7A4506;
+  --accent-soft: #F5E4C8;
+  --l1: #F3DDB8; --l1-ink: #3B2A10;
+  --l2: #E7B76A; --l2-ink: #2E1F08;
+  --l3: #CF8A2A; --l3-ink: #1F1405;
+  --l4: #94540A; --l4-ink: #FFF6E8;
+  --pass: #1D7A45; --pass-soft: #DCF0E3;
+  --fail: #B33A25; --fail-soft: #F7DFD9;
+  --code-bg: #EAEFF3; --code-ink: #16222D; --code-kw: #1C58A0; --code-str: #1B7046; --code-num: #95500F;
+  --code-com: #64727E; --code-title: #6B3794; --code-builtin: #0D6875; --code-rule: #D3DCE3;
+  --nav-bg: rgba(242, 244, 246, 0.92);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0E141A; --surface: #151D25; --surface-2: #1C2630; --ink: #E5EBF0; --ink-2: #C3CDD6; --muted: #8B99A6;
+    --rule: #28343F; --accent: #F0A640; --accent-ink: #F5C27C; --accent-soft: #3A2A13;
+    --l1: #5A4220; --l1-ink: #F7E6CB; --l2: #8A6026; --l2-ink: #FFF3E0; --l3: #C3832E; --l3-ink: #1A1206; --l4: #F0A640; --l4-ink: #1A1206;
+    --pass: #5CC98A; --pass-soft: #163324; --fail: #F07A63; --fail-soft: #3A1D17;
+    --code-bg: #0A1016; --code-ink: #D6DFE7; --code-kw: #80B1EE; --code-str: #7BCFA1; --code-num: #F0B46B;
+    --code-com: #7A8894; --code-title: #C7A1EE; --code-builtin: #6FCFD9; --code-rule: #1F2A35;
+    --nav-bg: rgba(14, 20, 26, 0.9);
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0E141A; --surface: #151D25; --surface-2: #1C2630; --ink: #E5EBF0; --ink-2: #C3CDD6; --muted: #8B99A6;
+  --rule: #28343F; --accent: #F0A640; --accent-ink: #F5C27C; --accent-soft: #3A2A13;
+  --l1: #5A4220; --l1-ink: #F7E6CB; --l2: #8A6026; --l2-ink: #FFF3E0; --l3: #C3832E; --l3-ink: #1A1206; --l4: #F0A640; --l4-ink: #1A1206;
+  --pass: #5CC98A; --pass-soft: #163324; --fail: #F07A63; --fail-soft: #3A1D17;
+  --code-bg: #0A1016; --code-ink: #D6DFE7; --code-kw: #80B1EE; --code-str: #7BCFA1; --code-num: #F0B46B;
+  --code-com: #7A8894; --code-title: #C7A1EE; --code-builtin: #6FCFD9; --code-rule: #1F2A35;
+  --nav-bg: rgba(14, 20, 26, 0.9);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--accent-ink); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.page { max-width: 920px; margin: 0 auto; padding-block: 0 72px; }
+.prose p, .prose li { max-width: 68ch; }
+h1, h2, .display { font-family: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif; font-weight: 700; letter-spacing: 0.005em; text-wrap: balance; }
+h2 { font-size: 2.1rem; line-height: 1.05; margin: 0 0 12px; }
+h3 { font-size: 1.12rem; line-height: 1.3; margin: 0; font-weight: 600; text-wrap: balance; }
+h4 { font-size: 1rem; margin: 0 0 4px; font-weight: 600; }
+p { margin: 0 0 12px; }
+.muted { color: var(--muted); font-weight: 400; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem; font-weight: 600; color: var(--accent-ink); margin: 0 0 6px; }
+.tag { display: inline-block; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.68rem; font-weight: 600; color: var(--muted); margin-right: 6px; }
+code, pre, kbd { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+:not(pre) > code { background: var(--surface-2); color: var(--ink); padding: 0.08em 0.36em; border-radius: 4px; font-size: 0.86em; }
+pre {
+  margin: 12px 0 0;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border: 1px solid var(--code-rule);
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  tab-size: 4;
+}
+pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+.hljs-keyword, .hljs-literal, .hljs-meta .hljs-keyword { color: var(--code-kw); font-weight: 600; }
+.hljs-string, .hljs-subst .hljs-string { color: var(--code-str); }
+.hljs-number { color: var(--code-num); }
+.hljs-comment { color: var(--code-com); font-style: italic; }
+.hljs-title, .hljs-title.function_, .hljs-title.class_ { color: var(--code-title); }
+.hljs-built_in, .hljs-type { color: var(--code-builtin); }
+.hljs-params, .hljs-variable { color: inherit; }
+.hljs-meta { color: var(--code-com); }
+
+/* nav */
+.topnav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  margin-inline: -16px;
+  padding-inline: 16px;
+  background: var(--ground);
+  background: var(--nav-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+.topnav-inner { max-width: 920px; margin: 0 auto; display: flex; align-items: center; gap: 18px; overflow-x: auto; white-space: nowrap; padding-block: 10px; scrollbar-width: none; }
+.topnav-inner::-webkit-scrollbar { display: none; }
+.brand { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; color: var(--ink); text-decoration: none; }
+.brand span { color: var(--accent); }
+.topnav a.nav { color: var(--ink-2); text-decoration: none; font-size: 0.88rem; font-weight: 500; }
+.topnav a.nav:hover { color: var(--accent-ink); }
+
+/* hero */
+.hero { padding-block: 40px 28px; }
+.hero h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 0.98; margin: 0 0 16px; }
+.hero .lead { font-size: 1.08rem; color: var(--ink-2); max-width: 64ch; }
+.kit-note { display: flex; gap: 12px; align-items: baseline; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; margin-top: 18px; font-size: 0.94rem; color: var(--ink-2); }
+.kit-note strong { color: var(--ink); }
+
+/* 90-minute ladder */
+.ladder { margin: 28px 0 0; }
+.ladder figcaption { font-size: 0.86rem; color: var(--muted); margin-top: 10px; max-width: 72ch; }
+.bar { display: flex; height: 46px; border-radius: 8px; overflow: hidden; border: 1px solid var(--rule); }
+.seg { display: flex; align-items: center; justify-content: center; font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; font-size: 1.05rem; min-width: 0; }
+.seg.l1 { flex: 10; background: var(--l1); color: var(--l1-ink); }
+.seg.l2 { flex: 15; background: var(--l2); color: var(--l2-ink); }
+.seg.l3 { flex: 30; background: var(--l3); color: var(--l3-ink); }
+.seg.l4 { flex: 30; background: var(--l4); color: var(--l4-ink); }
+.seg.buf { flex: 5; background: repeating-linear-gradient(135deg, var(--surface-2) 0 5px, var(--surface) 5px 10px); }
+.ticks { position: relative; height: 18px; margin-top: 4px; font-size: 0.74rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ticks span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.ticks span:first-child { transform: none; }
+.ticks span:last-child { transform: translateX(-100%); }
+.legend { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.legend li { border-top: 4px solid var(--lc); padding-top: 8px; }
+.legend .when { display: block; font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.legend .what { display: block; font-size: 0.9rem; color: var(--ink-2); }
+
+/* sections */
+section { padding-block: 44px 8px; border-top: 1px solid var(--rule); }
+.section-intro { color: var(--ink-2); max-width: 68ch; }
+.facts { display: grid; grid-template-columns: 10.5rem 1fr; gap: 14px 24px; margin: 20px 0 0; }
+.facts dt { font-weight: 600; }
+.facts dd { margin: 0; color: var(--ink-2); max-width: 64ch; }
+@media (max-width: 620px) { .facts { grid-template-columns: 1fr; gap: 2px; } .facts dd { margin-bottom: 14px; } }
+
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 12px; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 2.2rem 1fr; gap: 10px; align-items: baseline; max-width: 72ch; }
+.steps li::before { content: counter(step); font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; font-size: 1.35rem; color: var(--accent); text-align: right; }
+.callouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 22px; }
+.callout { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; }
+.callout h3 { font-size: 1rem; margin-bottom: 6px; }
+.callout p { font-size: 0.93rem; color: var(--ink-2); margin: 0; }
+
+/* patterns */
+.pat-index { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 18px 0 8px; counter-reset: pat; }
+.pat-index li { counter-increment: pat; }
+.pat-index a { display: inline-block; font-size: 0.84rem; text-decoration: none; color: var(--ink-2); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 3px 11px; }
+.pat-index a::before { content: counter(pat) " "; color: var(--accent); font-weight: 600; }
+.pat-index a:hover { border-color: var(--accent); color: var(--accent-ink); }
+.pattern { padding-block: 22px 4px; }
+.pattern .when { margin: 6px 0 4px; font-size: 0.95rem; }
+.pattern .why { color: var(--ink-2); font-size: 0.95rem; margin: 0; max-width: 72ch; }
+.variants { margin-top: 30px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; }
+.variants h3 { margin-bottom: 8px; }
+.variant + .variant { margin-top: 18px; }
+.variant p { color: var(--ink-2); font-size: 0.95rem; margin: 0; }
+
+/* gotchas */
+.gotchas { list-style: none; padding: 0; margin: 20px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px 22px; }
+.gotchas li { display: grid; gap: 2px; padding: 10px 0 10px 14px; border-left: 3px solid var(--fail); }
+.g-title { font-weight: 600; }
+.g-fix { color: var(--ink-2); font-size: 0.93rem; }
+
+/* problems */
+.progress { font-size: 0.92rem; color: var(--muted); margin: 6px 0 0; font-variant-numeric: tabular-nums; }
+.progress strong { color: var(--pass); }
+.prob { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 18px 14px; margin-top: 18px; }
+.prob-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 16px; align-items: flex-start; }
+.prob-title { display: flex; gap: 12px; align-items: baseline; min-width: 0; }
+.prob-num { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.prob h3 { font-size: 1.2rem; }
+.prob h3 .sub { color: var(--muted); font-weight: 400; }
+.prob-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.chip { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.03em; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.chip-hot { background: var(--accent); color: var(--surface); }
+.chip-warm { background: var(--accent-soft); color: var(--accent-ink); }
+.chip-cool { background: var(--surface-2); color: var(--ink-2); }
+.chip-official { background: var(--pass-soft); color: var(--pass); }
+.done { font: inherit; font-size: 0.8rem; font-weight: 500; color: var(--ink-2); background: transparent; border: 1px solid var(--rule); border-radius: 999px; padding: 3px 11px; cursor: pointer; }
+.done:hover { border-color: var(--pass); color: var(--pass); }
+.done[aria-pressed="true"] { background: var(--pass-soft); border-color: var(--pass); color: var(--pass); }
+.reported { font-size: 0.92rem; color: var(--muted); margin: 8px 0 12px; }
+.levels { list-style: none; padding: 0; margin: 0; display: grid; gap: 7px; }
+.levels li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 10px; align-items: baseline; }
+.lv { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; font-size: 0.95rem; text-align: center; border-radius: 5px; padding: 1px 0; }
+.lv.l1 { background: var(--l1); color: var(--l1-ink); }
+.lv.l2 { background: var(--l2); color: var(--l2-ink); }
+.lv.l3 { background: var(--l3); color: var(--l3-ink); }
+.lv.l4 { background: var(--l4); color: var(--l4-ink); }
+.lv-text { font-size: 0.95rem; }
+.traps { margin-top: 12px; font-size: 0.93rem; }
+.traps ul { margin: 4px 0 0; padding-left: 18px; color: var(--ink-2); }
+.prob details { margin-top: 12px; border-top: 1px dashed var(--rule); padding-top: 10px; }
+.prob summary { cursor: pointer; font-weight: 600; font-size: 0.94rem; color: var(--accent-ink); }
+.prob summary .muted { font-size: 0.84rem; }
+.kit-line { margin: 10px 0 0; font-size: 0.85rem; }
+
+/* schedule */
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 18px; }
+.plan { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; }
+.plan h3 { margin-bottom: 8px; }
+.plan ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.plan li { font-size: 0.95rem; color: var(--ink-2); }
+.plan li strong { color: var(--ink); }
+
+.sources { padding-left: 20px; font-size: 0.9rem; display: grid; gap: 4px; }
+footer { margin-top: 40px; font-size: 0.82rem; color: var(--muted); }
+</style>
+
+</head>
+<body>
+<!--BODY-->
+<nav class="topnav" aria-label="Sections">
+  <div class="topnav-inner">
+    <a class="brand" href="#top">ICA <span>Playbook</span></a>
+    <a class="nav" href="#format">Format</a>
+    <a class="nav" href="#minutes">Your 90 minutes</a>
+    <a class="nav" href="#patterns">Patterns</a>
+    <a class="nav" href="#mistakes">Mistakes</a>
+    <a class="nav" href="#problems">Problems</a>
+    <a class="nav" href="#schedule">Schedule</a>
+    <a class="nav" href="#kit">Kit</a>
+  </div>
+</nav>
+
+<main class="page" id="top">
+  <header class="hero">
+    <p class="eyebrow">CodeSignal Industry Coding Assessment &middot; Python &middot; 90 minutes</p>
+    <h1>Meta FDE Assessment Playbook</h1>
+    <p class="lead">One problem, four levels, ninety minutes. Each level unlocks only when every test of the current level passes. This page covers how to spend those minutes, the eleven code patterns behind almost every level, the mistakes that quietly fail tests, and the problem families that keep coming up.</p>
+
+    <figure class="ladder">
+      <div class="bar" role="img" aria-label="Target time split: Level 1 10 minutes, Level 2 15 minutes, Level 3 30 minutes, Level 4 30 minutes, 5 minutes buffer.">
+        <div class="seg l1">L1</div>
+        <div class="seg l2">L2</div>
+        <div class="seg l3">L3</div>
+        <div class="seg l4">L4</div>
+        <div class="seg buf" aria-hidden="true"></div>
+      </div>
+      <div class="ticks" aria-hidden="true">
+        <span style="left:0%">0:00</span>
+        <span style="left:27.78%">0:25</span>
+        <span style="left:61.11%">0:55</span>
+        <span style="left:100%">1:30</span>
+      </div>
+      <ol class="legend">
+        <li style="--lc: var(--l1)"><span class="when">0:00&ndash;0:10</span><span class="what">Basic operations: store, fetch, validate. Every corner case in the text is a test.</span></li>
+        <li style="--lc: var(--l2)"><span class="when">0:10&ndash;0:25</span><span class="what">Data processing: rank, filter, format. Tie-breaks and output strings decide it.</span></li>
+        <li style="--lc: var(--l3)"><span class="when">0:25&ndash;0:55</span><span class="what">The refactor: timestamps, TTL, users and quotas, delayed events.</span></li>
+        <li style="--lc: var(--l4)"><span class="when">0:55&ndash;1:25</span><span class="what">Extending the design: history, merges, backup and restore, rollback.</span></li>
+      </ol>
+      <figcaption>Target split. CodeSignal's own design budget for all four levels is 90&ndash;165 minutes, so an unfinished Level 4 is normal. Every extra passing test still adds points. Keep the last five minutes for a full run and a final submit.</figcaption>
+    </figure>
+
+    <div class="kit-note"><span class="tag">Kit</span><span>The <strong>practice kit</strong> (<code>meta_fde_ica_kit.zip</code>, sent in our chat) runs every problem below on your laptop with the same unlock-by-tests flow and a 90-minute clock. <a href="#kit">How to use it</a>.</span></div>
+  </header>
+
+  <section id="format" class="prose">
+    <p class="eyebrow">What you're walking into</p>
+    <h2>The format, in plain terms</h2>
+    <p class="section-intro">"Progressive Filesystem" is CodeSignal's name for the question <em>format</em>, not the topic. You get a small project whose requirements grow in four steps. The topic comes from CodeSignal's question bank: banking, file storage, a key-value database, and so on.</p>
+    <dl class="facts">
+      <dt>What you get</dt>
+      <dd>A multi-file workspace: an interface file with method signatures and docstrings, an implementation file where you write your class, and read-only unit tests. Tests run in the IDE; the result panel shows each test as green or red.</dd>
+      <dt>Length</dt>
+      <dd>Up to 90 minutes. CodeSignal states you are not necessarily expected to finish everything.</dd>
+      <dt>Unlocking</dt>
+      <dd>Level N+1's requirements appear only after all of Level N's tests pass. Earlier levels' tests keep counting, so a Level 3 refactor must not break Level 1.</dd>
+      <dt>Scoring</dt>
+      <dd>A coding score from 200 to 600 that rises with completed work, with partial credit per passing test. Meta hasn't published a cutoff.</dd>
+      <dt>The instructions</dt>
+      <dd>The standard header says, in effect: read the whole question first, implement level by level, expect to refactor, don't change existing method signatures, and press Submit often, since each passing test earns partial credit. Follow whatever your screen says about Run and Submit.</dd>
+      <dt>Practice test</dt>
+      <dd>The practice link in Meta's email is CodeSignal's progressive practice question. Candidates describe it as an "Integer Container": <code>add</code> and <code>delete</code>, then <code>get_median</code>. Do it once to learn the file tree, Run and Submit. Problem 0 in the kit has the same shape.</dd>
+      <dt>Before you start</dt>
+      <dd>Choose Python in the language menu (top right of the IDE) before you begin. Check the start screen for what's allowed: CodeSignal says many assessments allow documentation lookups, and you should assume AI assistants are not allowed.</dd>
+      <dt>Retakes</dt>
+      <dd>Two attempts in a rolling 180-day window, and only if the company sends a new invitation.</dd>
+    </dl>
+  </section>
+
+  <section id="minutes" class="prose">
+    <p class="eyebrow">Your 90 minutes</p>
+    <h2>The loop for every level</h2>
+    <p class="section-intro">At the start, read the problem intro: it summarizes all four levels in one line each. Those lines tell you where your design will need to stretch, so let them shape your Level 1 data model. Then run this loop once per level:</p>
+    <ol class="steps">
+      <li><span>Read the level text twice. Mark each return type and every "returns None / False if&hellip;" clause.</span></li>
+      <li><span>Open the level's test file. The first test is usually the example table; the rest are edge cases the text only implies. When the text and a test disagree, the test wins.</span></li>
+      <li><span>Decide what new state the level needs and which one helper will own it (<code>_process</code>, <code>_add</code>, <code>_alive</code>, <code>_log</code>).</span></li>
+      <li><span>Write the happy path, then each failure branch. Validate before you mutate.</span></li>
+      <li><span>Run the tests. Fix the first failure only, then run again. The message tells you the call and the expected value.</span></li>
+      <li><span>When the level is green, read the next level and get going. Don't polish finished code.</span></li>
+    </ol>
+    <div class="callouts">
+      <div class="callout"><h3>Stuck on one test</h3><p>Give it ten minutes, then move to another failing test in the same level. Credit is per test, so a 7/9 level still scores.</p></div>
+      <div class="callout"><h3>Tempted to rewrite</h3><p>After minute 45, don't. Extract one helper or add one field instead. A working solution with a clumsy spot beats a half-finished clean one.</p></div>
+      <div class="callout"><h3>Last five minutes</h3><p>Run every test, delete debug prints, make sure the file imports cleanly, and submit.</p></div>
+    </div>
+  </section>
+
+  <section id="patterns">
+    <p class="eyebrow">Eleven patterns</p>
+    <h2>The code behind almost every level</h2>
+    <p class="section-intro">Every problem below is a different combination of these. Know them well enough to type them without looking; that is where your minutes come from.</p>
+    <ol class="pat-index"><li><a href="#pat-entities">Entity classes and one registry</a></li><li><a href="#pat-rank">Rank, slice, format</a></li><li><a href="#pat-compat">Refactor without breaking Level 1</a></li><li><a href="#pat-events">Time hook and event heap</a></li><li><a href="#pat-ttl">TTL entries</a></li><li><a href="#pat-history">Value at a past time</a></li><li><a href="#pat-snapshots">Backup, restore, rollback</a></li><li><a href="#pat-ownership">Ownership, capacity, merge</a></li><li><a href="#pat-intervals">Intervals: overlap and merge</a></li><li><a href="#pat-undo">Undo and redo</a></li><li><a href="#pat-graph">Dependency graph</a></li></ol>
+<article class="pattern" id="pat-entities"><h3>Entity classes and one registry</h3><p class="when"><span class="tag">Use when</span> Every level of every problem. Start this way at Level 1, even when a dict of ints would do.</p><p class="why">Level 3 and 4 add fields (owner, history, pending events). A small class absorbs them; a dict of ints forces a rewrite.</p><pre><code class="language-python">class Account:
+    def __init__(self, account_id: str):
+        self.id = account_id
+        self.balance = 0
+        self.outgoing = 0          # later levels add fields here, not new dicts
+
+
+class BankingSystemImpl(BankingSystem):
+    def __init__(self):
+        self.accounts: dict[str, Account] = {}
+
+    def transfer(self, timestamp, source_id, target_id, amount):
+        src = self.accounts.get(source_id)
+        dst = self.accounts.get(target_id)
+        if src is None or dst is None or src is dst or src.balance &lt; amount:
+            return None                      # validate everything first...
+        src.balance -= amount                # ...then mutate: failures change nothing
+        src.outgoing += amount
+        dst.balance += amount
+        return src.balance</code></pre></article>
+<article class="pattern" id="pat-rank"><h3>Rank, slice, format</h3><p class="when"><span class="tag">Use when</span> Any &quot;top n&quot;, &quot;sorted by X then Y&quot; or &quot;name(value)&quot; output. That is most Level 2s.</p><p class="why">One tuple key handles mixed directions: negate the number for descending, keep the string for ascending ties.</p><pre><code class="language-python">ranked = sorted(self.accounts.values(), key=lambda a: (-a.outgoing, a.id))
+top = [f&quot;{a.id}({a.outgoing})&quot; for a in ranked[:n]]   # [:n] also covers &quot;fewer than n&quot;
+
+# joined-string variant some specs want: &quot;a(5), b(3)&quot;
+line = &quot;, &quot;.join(top)
+
+# ids with numbers: keep the integer and sort by it, never by the string
+tasks.sort(key=lambda t: (-t.priority, t.seq))        # &quot;task_id_10&quot; &lt; &quot;task_id_2&quot; as strings</code></pre></article>
+<article class="pattern" id="pat-compat"><h3>Refactor without breaking Level 1</h3><p class="when"><span class="tag">Use when</span> Level 3 adds timestamped versions of old methods (set_at, get_at, file_upload_at ...).</p><p class="why">Old tests re-run. Route old and new methods through one private helper; the old one passes a neutral value.</p><pre><code class="language-python">def _get(self, key, field, timestamp):          # the only real implementation
+    entry = self.data.get(key, {}).get(field)
+    if entry is None or not self._alive(entry, timestamp):
+        return None
+    return entry[0]
+
+def get(self, key, field):                       # Level 1 signature unchanged
+    return self._get(key, field, None)           # None = &quot;ignore expiry&quot;
+
+def get_at(self, key, field, timestamp):         # Level 3
+    return self._get(key, field, timestamp)</code></pre></article>
+<article class="pattern" id="pat-events"><h3>Time hook and event heap</h3><p class="when"><span class="tag">Use when</span> Anything that happens later: cashback, scheduled payments, retries, expirations that must fire.</p><p class="why">Nothing calls you at the due time. Every public method first applies everything due at or before its timestamp.</p><pre><code class="language-python">import heapq
+
+def _process(self, now):
+    while self.queue and self.queue[0][0] &lt;= now:
+        due, seq, event_id = heapq.heappop(self.queue)
+        event = self.events[event_id]
+        if event.canceled:                     # lazy deletion: check state on pop
+            continue
+        event.apply(self)                      # e.g. refund cashback to event.owner
+        self._log(event.owner, due, self.accounts[event.owner].balance)  # history at DUE time
+
+def schedule(self, timestamp, delay, event):
+    self.seq += 1                              # tie-breaker: creation order
+    heapq.heappush(self.queue, (timestamp + delay, self.seq, event.id))
+
+# first line of EVERY public method, queries included:
+#     self._process(timestamp)</code></pre></article>
+<article class="pattern" id="pat-ttl"><h3>TTL entries</h3><p class="when"><span class="tag">Use when</span> Values that expire: fields with ttl, files with ttl, sessions, locks.</p><p class="why">Store the absolute expiry once; answer &quot;alive at t?&quot; in one place. Windows are half-open: [t, t + ttl).</p><pre><code class="language-python">def _set(self, key, field, value, timestamp, ttl=None):
+    expires = None if ttl is None else timestamp + ttl
+    self.data.setdefault(key, {})[field] = (value, expires)
+
+@staticmethod
+def _alive(entry, now):
+    expires = entry[1]
+    return now is None or expires is None or now &lt; expires   # gone AT timestamp + ttl</code></pre></article>
+<article class="pattern" id="pat-history"><h3>Value at a past time</h3><p class="when"><span class="tag">Use when</span> get_balance(time_at), &quot;state at T&quot;, &quot;who owned X at time T&quot;.</p><p class="why">Append (time, value) after every change, then binary-search. A None value marks &quot;did not exist&quot;.</p><pre><code class="language-python">import bisect
+
+class History:
+    def __init__(self):
+        self.times, self.values = [], []
+
+    def record(self, t, value):                 # after EVERY change; value None = gone
+        self.times.append(t)
+        self.values.append(value)
+
+    def at(self, t):
+        i = bisect.bisect_right(self.times, t)  # last entry with time &lt;= t
+        return self.values[i - 1] if i else None</code></pre></article>
+<article class="pattern" id="pat-snapshots"><h3>Backup, restore, rollback</h3><p class="when"><span class="tag">Use when</span> Level 4 of the database, storage and hosting problems.</p><p class="why">Snapshots must be copies. Store remaining TTL and re-anchor it to the restore time.</p><pre><code class="language-python">import bisect
+
+def backup(self, now):
+    snap = {}
+    for key, rec in self.data.items():
+        live = {f: (v, None if exp is None else exp - now)     # REMAINING ttl
+                for f, (v, exp) in rec.items() if exp is None or now &lt; exp}
+        if live:                                               # skip empty records
+            snap[key] = live
+    self.backup_times.append(now)
+    self.backups.append(snap)
+    return len(snap)
+
+def restore(self, now, target):
+    i = bisect.bisect_right(self.backup_times, target) - 1     # latest backup &lt;= target
+    self.data = {key: {f: (v, None if rem is None else now + rem)
+                       for f, (v, rem) in rec.items()}          # brand-new dicts
+                 for key, rec in self.backups[i].items()}</code></pre></article>
+<article class="pattern" id="pat-ownership"><h3>Ownership, capacity, merge</h3><p class="when"><span class="tag">Use when</span> Users with quotas, files with owners, merging accounts or users.</p><p class="why">One add/remove pair owns every size change, so capacity can&#x27;t drift. A merge re-points everything, then deletes the id.</p><pre><code class="language-python">def _add(self, owner_id, name, size):
+    user = self.users.get(owner_id)
+    if user is None or name in self.files:
+        return False
+    if user.capacity is not None and user.used + size &gt; user.capacity:
+        return False
+    self.files[name] = File(name, size, owner_id)
+    user.used += size
+    return True
+
+def merge_user(self, id1, id2):
+    if id1 == id2 or id1 not in self.users or id2 not in self.users:
+        return None
+    u1, u2 = self.users[id1], self.users.pop(id2)   # u2&#x27;s backup leaves with it
+    for f in self.files.values():
+        if f.owner == id2:
+            f.owner = id1
+    u1.used += u2.used
+    u1.capacity += u2.capacity
+    return u1.capacity - u1.used</code></pre></article>
+<article class="pattern" id="pat-intervals"><h3>Intervals: overlap and merge</h3><p class="when"><span class="tag">Use when</span> Salary for a window, double-pay periods, assignments active during [start, finish).</p><p class="why">Two lines cover almost every interval question. Merge overlapping periods so they never count twice.</p><pre><code class="language-python">def overlap(a_start, a_end, b_start, b_end):
+    return max(0, min(a_end, b_end) - max(a_start, b_start))
+
+def merge(intervals):
+    out = []
+    for s, e in sorted(intervals):
+        if out and s &lt;= out[-1][1]:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return out
+
+# pay = rate * (clipped_length + overlap_with_double_periods)</code></pre></article>
+<article class="pattern" id="pat-undo"><h3>Undo and redo</h3><p class="when"><span class="tag">Use when</span> Editors, containers, anything with &quot;revert the last change&quot;.</p><p class="why">Snapshots (the memento pattern) are simpler than writing an inverse for every operation, and harder to get wrong.</p><pre><code class="language-python">def _change(self, new_text, new_cursor):
+    if new_text != self.text:                        # only real changes are undoable
+        self.undo_stack.append((self.text, self.cursor))
+        self.redo_stack.clear()                      # a new change kills redo
+        self.text, self.cursor = new_text, new_cursor
+
+def undo(self):
+    if self.undo_stack:
+        self.redo_stack.append((self.text, self.cursor))
+        self.text, self.cursor = self.undo_stack.pop()
+    return self.text</code></pre></article>
+<article class="pattern" id="pat-graph"><h3>Dependency graph</h3><p class="when"><span class="tag">Use when</span> Jobs or tasks that wait for others, cascading cancels, &quot;reject if it creates a cycle&quot;.</p><p class="why">Store both edge directions. Adding &quot;A waits for B&quot; makes a cycle exactly when B already waits for A.</p><pre><code class="language-python">def _depends_on(self, start, target):          # does `start` (transitively) wait for `target`?
+    stack, seen = [start], set()
+    while stack:
+        cur = stack.pop()
+        if cur == target:
+            return True
+        if cur not in seen:
+            seen.add(cur)
+            stack.extend(self.jobs[cur].prereqs)
+    return False
+
+# add_dependency(a, b) is rejected when self._depends_on(b, a)
+# cancel cascades with a BFS over job.dependents</code></pre></article>
+<div class="variants"><h3>Format variants you might meet</h3><div class="variant"><h4>Query-array format</h4><p>Older ICA questions give a list of string commands and expect a list of strings back. Keep the class; add a thin adapter.</p><pre><code class="language-python">def solution(queries):
+    store = CloudStorage()
+    out = []
+    for op, *args in queries:
+        if op == &quot;ADD_FILE&quot;:
+            result = store.add_file(args[0], int(args[1]))
+        elif op == &quot;GET_FILE_SIZE&quot;:
+            result = store.get_file_size(args[0])
+        else:
+            raise ValueError(op)
+        out.append(to_str(result))
+    return out
+
+def to_str(value):
+    if value is None:
+        return &quot;&quot;
+    if isinstance(value, bool):        # check bool BEFORE int: True is an int
+        return &quot;true&quot; if value else &quot;false&quot;
+    if isinstance(value, list):
+        return &quot;, &quot;.join(value)
+    return str(value)</code></pre></div><div class="variant"><h4>Raise instead of return</h4><p>Some specs say an operation &quot;throws&quot;. Tests then use assertRaises, so return values don&#x27;t matter there.</p><pre><code class="language-python">def file_upload(self, name, size):
+    if name in self.files:
+        raise RuntimeError(f&quot;file {name} already exists&quot;)
+    self.files[name] = (size, None)</code></pre></div></div>
+  </section>
+
+  <section id="mistakes">
+    <p class="eyebrow">Mistakes that fail tests</p>
+    <h2>Check these before every Run</h2>
+    <p class="section-intro">These are the slips that most often turn a test red. The kit's tests include cases for most of them.</p>
+    <ul class="gotchas"><li><span class="g-title">Tie-breaks in the wrong direction</span><span class="g-fix">Sort with one tuple key such as <code>(-count, name)</code>, and check it on equal counts.</span></li><li><span class="g-title">Numbers sorted as strings</span><span class="g-fix"><code>"acc10" &lt; "acc2"</code> and <code>"task_id_10" &lt; "task_id_2"</code>. Keep the integer and sort by it.</span></li><li><span class="g-title">Output format off by one character</span><span class="g-fix"><code>"name(size)"</code> has no spaces, and a joined list uses <code>", "</code>. Copy the format from the test, not from memory.</span></li><li><span class="g-title">None vs &quot;&quot; vs False vs []</span><span class="g-fix">Return exactly what the spec names for each failure case. Tests compare values exactly.</span></li><li><span class="g-title">A failed operation changed state</span><span class="g-fix">Validate every condition first and mutate last. A rejected transfer touches neither balance.</span></li><li><span class="g-title">Counter advanced on failure</span><span class="g-fix">Ids like <code>payment3</code> or <code>task_id_7</code> count successful creations only, unless the spec says otherwise.</span></li><li><span class="g-title">Due events applied too late</span><span class="g-fix">Apply everything due at or before the timestamp before running the operation. Do it in every method, queries included.</span></li><li><span class="g-title">TTL boundary</span><span class="g-fix">Alive means <code>now &lt; t + ttl</code>. At exactly <code>t + ttl</code> the value is gone.</span></li><li><span class="g-title">Float money</span><span class="g-fix">2% rounded down is <code>amount * 2 // 100</code>. Floats and <code>round()</code> break on .5 cases.</span></li><li><span class="g-title">History logged at the wrong time</span><span class="g-fix">Lazily applied events go into history at their due time. "At time T" means after all operations at T.</span></li><li><span class="g-title">Snapshot shares objects with live state</span><span class="g-fix">Copy on backup and again on restore. Tuples inside dicts are safe; nested dicts and lists are not.</span></li><li><span class="g-title">Merge forgets something</span><span class="g-fix">Move balance, totals, pending events, ownership and capacity, then delete the old id. A re-created id starts empty.</span></li><li><span class="g-title">Edge sizes</span><span class="g-fix"><code>n = 0</code>, <code>n</code> larger than the count, empty storage, unknown ids. Each one has a defined answer.</span></li><li><span class="g-title">Deleting while iterating</span><span class="g-fix">Loop over <code>list(d)</code>, or collect the keys first.</span></li><li><span class="g-title">Changed a signature</span><span class="g-fix">Keep every method name, parameter order and default. Some Level 3s put <code>timestamp</code> last.</span></li><li><span class="g-title">Earlier levels regressed</span><span class="g-fix">Level 1 and 2 tests keep running. Re-run everything after each refactor.</span></li><li><span class="g-title">Empty containers left behind</span><span class="g-fix">When the last field of a record goes, drop the record. Counts of "non-empty records" depend on it.</span></li><li><span class="g-title">Prefix, substring, suffix</span><span class="g-fix"><code>startswith</code>, <code>in</code> and <code>endswith</code> answer different questions, and all of them are case-sensitive.</span></li></ul>
+  </section>
+
+  <section id="problems">
+    <p class="eyebrow">Problem families</p>
+    <h2>What to practice</h2>
+    <p class="section-intro">Nobody can promise which problem you'll get, and Meta-specific reports are rare. These are the families reported for CodeSignal's industry assessment across companies, plus two extra shapes (text editor, job scheduler). If your problem is new, it will still be built from the patterns above. Each reference solution passes every test in the kit.</p>
+    <p class="progress" id="progress" aria-live="polite"><strong id="done-count">0</strong> of 11 practiced</p>
+    
+<article class="prob" id="p-integer_container">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">0</span>
+      <h3>Integer Container <span class="sub">warm-up</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-official">Meta&#x27;s practice test</span>
+      <button type="button" class="done" id="done-integer_container" data-id="integer_container" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">The practice question in Meta&#x27;s invite (CodeSignal &#x27;Progressive Filesystem&#x27; practice): add / delete, then get_median.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">add(value) returns the new size; delete(value) removes one occurrence and returns a bool</span></li><li><span class="lv l2">L2</span><span class="lv-text">get_median(): leftmost middle of the sorted values; None when empty</span></li><li><span class="lv l3">L3</span><span class="lv-text">count_in_range(low, high) and get_kth_smallest(k) (kit extension)</span></li><li><span class="lv l4">L4</span><span class="lv-text">undo() / redo() over successful changes (kit extension)</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Median index is (n - 1) // 2 for both odd and even n.</li><li>Failed deletes are not changes; any new change clears redo.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(integer_container_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+import bisect
+
+from integer_container import IntegerContainer
+
+
+class IntegerContainerImpl(IntegerContainer):
+    &quot;&quot;&quot;Sorted list + bisect. Every change goes through _insert/_remove so undo/redo reuse them.&quot;&quot;&quot;
+
+    def __init__(self):
+        self._values: list[int] = []          # always kept sorted
+        self._undo: list[tuple[str, int]] = []  # (&quot;add&quot; | &quot;delete&quot;, value)
+        self._redo: list[tuple[str, int]] = []
+
+    # ---- primitives (no history bookkeeping) ------------------------------
+    def _insert(self, value: int) -&gt; None:
+        bisect.insort(self._values, value)
+
+    def _remove(self, value: int) -&gt; bool:
+        i = bisect.bisect_left(self._values, value)
+        if i &lt; len(self._values) and self._values[i] == value:
+            self._values.pop(i)
+            return True
+        return False
+
+    def _record(self, op: str, value: int) -&gt; None:
+        self._undo.append((op, value))
+        self._redo.clear()                    # a new change invalidates redo
+
+    # ---- Level 1 ------------------------------------------------------------
+    def add(self, value: int) -&gt; int:
+        self._insert(value)
+        self._record(&quot;add&quot;, value)
+        return len(self._values)
+
+    def delete(self, value: int) -&gt; bool:
+        if not self._remove(value):
+            return False                      # failed ops are not recorded
+        self._record(&quot;delete&quot;, value)
+        return True
+
+    # ---- Level 2 ------------------------------------------------------------
+    def get_median(self) -&gt; int | None:
+        if not self._values:
+            return None
+        return self._values[(len(self._values) - 1) // 2]   # leftmost middle
+
+    # ---- Level 3 ------------------------------------------------------------
+    def count_in_range(self, low: int, high: int) -&gt; int:
+        if low &gt; high:
+            return 0
+        return bisect.bisect_right(self._values, high) - bisect.bisect_left(self._values, low)
+
+    def get_kth_smallest(self, k: int) -&gt; int | None:
+        if 1 &lt;= k &lt;= len(self._values):
+            return self._values[k - 1]
+        return None
+
+    # ---- Level 4 ------------------------------------------------------------
+    def undo(self) -&gt; bool:
+        if not self._undo:
+            return False
+        op, value = self._undo.pop()
+        if op == &quot;add&quot;:
+            self._remove(value)
+        else:
+            self._insert(value)
+        self._redo.append((op, value))
+        return True
+
+    def redo(self) -&gt; bool:
+        if not self._redo:
+            return False
+        op, value = self._redo.pop()
+        if op == &quot;add&quot;:
+            self._insert(value)
+        else:
+            self._remove(value)
+        self._undo.append((op, value))
+        return True</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start integer_container</code></p>
+</article>
+
+<article class="prob" id="p-banking_cashback">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">1</span>
+      <h3>Banking System <span class="sub">payments with cashback</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-hot">Most reported</span>
+      <button type="button" class="done" id="done-banking_cashback" data-id="banking_cashback" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Reported for Coinbase, Ramp, eBay and Anthropic assessments.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">create_account, deposit, transfer (returns the source balance or None)</span></li><li><span class="lv l2">L2</span><span class="lv-text">top_spenders(n): outgoing desc, then account id asc, as &quot;id(total)&quot;</span></li><li><span class="lv l3">L3</span><span class="lv-text">pay() returns &quot;paymentK&quot;; 2% cashback (rounded down) lands 86,400,000 ms later, before other operations at that time; get_payment_status</span></li><li><span class="lv l4">L4</span><span class="lv-text">merge_accounts (balance, outgoing, pending cashback, payment ownership) and get_balance(time_at)</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Call the due-cashback processor first in EVERY method, including queries.</li><li>Log cashback in the balance history at its due time, not when you happened to apply it.</li><li>A merged-away id returns None from the merge time on, but its earlier history still answers.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(banking_system_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+import bisect
+import heapq
+
+from banking_system import BankingSystem
+
+DAY_MS = 24 * 60 * 60 * 1000
+CASHBACK_PERCENT = 2
+
+
+class History:
+    &quot;&quot;&quot;Timeline of (timestamp, value) for one account id. value None = account doesn&#x27;t exist.&quot;&quot;&quot;
+
+    def __init__(self):
+        self.times: list[int] = []
+        self.values: list[int | None] = []
+
+    def record(self, timestamp: int, value: int | None) -&gt; None:
+        self.times.append(timestamp)
+        self.values.append(value)
+
+    def at(self, timestamp: int) -&gt; int | None:
+        i = bisect.bisect_right(self.times, timestamp)   # last entry with time &lt;= timestamp
+        return self.values[i - 1] if i else None
+
+
+class Account:
+    def __init__(self, account_id: str):
+        self.id = account_id
+        self.balance = 0
+        self.outgoing = 0
+        self.payment_ids: list[str] = []
+
+
+class Payment:
+    def __init__(self, payment_id: str, owner: str, cashback: int, due: int):
+        self.id = payment_id
+        self.owner = owner
+        self.cashback = cashback
+        self.due = due
+        self.status = &quot;IN_PROGRESS&quot;
+
+
+class BankingSystemImpl(BankingSystem):
+
+    def __init__(self):
+        self.accounts: dict[str, Account] = {}
+        self.history: dict[str, History] = {}
+        self.payments: dict[str, Payment] = {}
+        self.payment_count = 0
+        self.pending: list[tuple[int, int, str]] = []   # min-heap of (due, seq, payment_id)
+
+    # ---- shared helpers ----------------------------------------------------
+    def _process(self, timestamp: int) -&gt; None:
+        &quot;&quot;&quot;Apply every cashback due at or before `timestamp` (called first by every operation).&quot;&quot;&quot;
+        while self.pending and self.pending[0][0] &lt;= timestamp:
+            due, _, pid = heapq.heappop(self.pending)
+            payment = self.payments[pid]
+            account = self.accounts[payment.owner]      # owner is updated on merge
+            account.balance += payment.cashback
+            payment.status = &quot;CASHBACK_RECEIVED&quot;
+            self._log(account.id, due, account.balance)  # history uses the due time
+
+    def _log(self, account_id: str, timestamp: int, value: int | None) -&gt; None:
+        self.history.setdefault(account_id, History()).record(timestamp, value)
+
+    # ---- Level 1 -------------------------------------------------------------
+    def create_account(self, timestamp: int, account_id: str) -&gt; bool:
+        self._process(timestamp)
+        if account_id in self.accounts:
+            return False
+        self.accounts[account_id] = Account(account_id)
+        self._log(account_id, timestamp, 0)
+        return True
+
+    def deposit(self, timestamp: int, account_id: str, amount: int) -&gt; int | None:
+        self._process(timestamp)
+        account = self.accounts.get(account_id)
+        if account is None:
+            return None
+        account.balance += amount
+        self._log(account_id, timestamp, account.balance)
+        return account.balance
+
+    def transfer(self, timestamp: int, source_account_id: str, target_account_id: str, amount: int) -&gt; int | None:
+        self._process(timestamp)
+        source = self.accounts.get(source_account_id)
+        target = self.accounts.get(target_account_id)
+        if source is None or target is None or source is target or source.balance &lt; amount:
+            return None
+        source.balance -= amount
+        source.outgoing += amount
+        target.balance += amount
+        self._log(source.id, timestamp, source.balance)
+        self._log(target.id, timestamp, target.balance)
+        return source.balance
+
+    # ---- Level 2 -------------------------------------------------------------
+    def top_spenders(self, timestamp: int, n: int) -&gt; list[str]:
+        self._process(timestamp)
+        ranked = sorted(self.accounts.values(), key=lambda a: (-a.outgoing, a.id))
+        return [f&quot;{a.id}({a.outgoing})&quot; for a in ranked[:n]]
+
+    # ---- Level 3 -------------------------------------------------------------
+    def pay(self, timestamp: int, account_id: str, amount: int) -&gt; str | None:
+        self._process(timestamp)
+        account = self.accounts.get(account_id)
+        if account is None or account.balance &lt; amount:
+            return None
+        account.balance -= amount
+        account.outgoing += amount
+        self.payment_count += 1
+        pid = f&quot;payment{self.payment_count}&quot;
+        due = timestamp + DAY_MS
+        self.payments[pid] = Payment(pid, account_id, amount * CASHBACK_PERCENT // 100, due)
+        account.payment_ids.append(pid)
+        heapq.heappush(self.pending, (due, self.payment_count, pid))
+        self._log(account_id, timestamp, account.balance)
+        return pid
+
+    def get_payment_status(self, timestamp: int, account_id: str, payment: str) -&gt; str | None:
+        self._process(timestamp)
+        if account_id not in self.accounts:
+            return None
+        p = self.payments.get(payment)
+        if p is None or p.owner != account_id:
+            return None
+        return p.status
+
+    # ---- Level 4 -------------------------------------------------------------
+    def merge_accounts(self, timestamp: int, account_id_1: str, account_id_2: str) -&gt; bool:
+        self._process(timestamp)
+        if account_id_1 == account_id_2:
+            return False
+        if account_id_1 not in self.accounts or account_id_2 not in self.accounts:
+            return False
+        a1 = self.accounts[account_id_1]
+        a2 = self.accounts.pop(account_id_2)
+        a1.balance += a2.balance
+        a1.outgoing += a2.outgoing
+        for pid in a2.payment_ids:            # pending cashbacks + status lookups follow the money
+            self.payments[pid].owner = account_id_1
+            a1.payment_ids.append(pid)
+        self._log(account_id_1, timestamp, a1.balance)
+        self._log(account_id_2, timestamp, None)   # account_id_2 stops existing now
+        return True
+
+    def get_balance(self, timestamp: int, account_id: str, time_at: int) -&gt; int | None:
+        self._process(timestamp)
+        history = self.history.get(account_id)
+        return history.at(time_at) if history else None</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start banking_cashback</code></p>
+</article>
+
+<article class="prob" id="p-banking_scheduled">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">2</span>
+      <h3>Banking System <span class="sub">scheduled payments</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-warm">Reported variant</span>
+      <button type="button" class="done" id="done-banking_scheduled" data-id="banking_scheduled" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Level 3 swaps cashback for schedule_payment / cancel_payment (reported for Coinbase).</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">create_account, deposit, transfer</span></li><li><span class="lv l2">L2</span><span class="lv-text">top_spenders(n)</span></li><li><span class="lv l3">L3</span><span class="lv-text">schedule_payment(ts, id, amount, delay) returns &quot;paymentK&quot;; skipped if funds are short; cancel_payment (owner only, pending only)</span></li><li><span class="lv l4">L4</span><span class="lv-text">merge_accounts (pending payments move to account 1) and get_balance(time_at)</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Payments due at the cancel timestamp run before the cancel.</li><li>Same due time: creation order. A canceled payment can stay in the heap; check its status when popped.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(banking_system_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+import bisect
+import heapq
+
+from banking_system import BankingSystem
+
+
+class History:
+    &quot;&quot;&quot;Timeline of (timestamp, value) for one account id. value None = account doesn&#x27;t exist.&quot;&quot;&quot;
+
+    def __init__(self):
+        self.times: list[int] = []
+        self.values: list[int | None] = []
+
+    def record(self, timestamp: int, value: int | None) -&gt; None:
+        self.times.append(timestamp)
+        self.values.append(value)
+
+    def at(self, timestamp: int) -&gt; int | None:
+        i = bisect.bisect_right(self.times, timestamp)
+        return self.values[i - 1] if i else None
+
+
+class Account:
+    def __init__(self, account_id: str):
+        self.id = account_id
+        self.balance = 0
+        self.outgoing = 0
+
+
+class ScheduledPayment:
+    def __init__(self, payment_id: str, owner: str, amount: int, due: int):
+        self.id = payment_id
+        self.owner = owner
+        self.amount = amount
+        self.due = due
+        self.status = &quot;PENDING&quot;   # PENDING -&gt; DONE | SKIPPED | CANCELED
+
+
+class BankingSystemImpl(BankingSystem):
+
+    def __init__(self):
+        self.accounts: dict[str, Account] = {}
+        self.history: dict[str, History] = {}
+        self.payments: dict[str, ScheduledPayment] = {}
+        self.payment_count = 0
+        self.queue: list[tuple[int, int, str]] = []   # min-heap of (due, creation_seq, payment_id)
+
+    # ---- shared helpers ----------------------------------------------------
+    def _process(self, timestamp: int) -&gt; None:
+        &quot;&quot;&quot;Perform every scheduled payment due at or before `timestamp`, in (due, creation) order.&quot;&quot;&quot;
+        while self.queue and self.queue[0][0] &lt;= timestamp:
+            due, _, pid = heapq.heappop(self.queue)
+            p = self.payments[pid]
+            if p.status != &quot;PENDING&quot;:            # canceled while waiting in the heap
+                continue
+            account = self.accounts[p.owner]
+            if account.balance &gt;= p.amount:
+                account.balance -= p.amount
+                account.outgoing += p.amount
+                p.status = &quot;DONE&quot;
+                self._log(account.id, due, account.balance)
+            else:
+                p.status = &quot;SKIPPED&quot;
+
+    def _log(self, account_id: str, timestamp: int, value: int | None) -&gt; None:
+        self.history.setdefault(account_id, History()).record(timestamp, value)
+
+    # ---- Level 1 -------------------------------------------------------------
+    def create_account(self, timestamp: int, account_id: str) -&gt; bool:
+        self._process(timestamp)
+        if account_id in self.accounts:
+            return False
+        self.accounts[account_id] = Account(account_id)
+        self._log(account_id, timestamp, 0)
+        return True
+
+    def deposit(self, timestamp: int, account_id: str, amount: int) -&gt; int | None:
+        self._process(timestamp)
+        account = self.accounts.get(account_id)
+        if account is None:
+            return None
+        account.balance += amount
+        self._log(account_id, timestamp, account.balance)
+        return account.balance
+
+    def transfer(self, timestamp: int, source_account_id: str, target_account_id: str, amount: int) -&gt; int | None:
+        self._process(timestamp)
+        source = self.accounts.get(source_account_id)
+        target = self.accounts.get(target_account_id)
+        if source is None or target is None or source is target or source.balance &lt; amount:
+            return None
+        source.balance -= amount
+        source.outgoing += amount
+        target.balance += amount
+        self._log(source.id, timestamp, source.balance)
+        self._log(target.id, timestamp, target.balance)
+        return source.balance
+
+    # ---- Level 2 -------------------------------------------------------------
+    def top_spenders(self, timestamp: int, n: int) -&gt; list[str]:
+        self._process(timestamp)
+        ranked = sorted(self.accounts.values(), key=lambda a: (-a.outgoing, a.id))
+        return [f&quot;{a.id}({a.outgoing})&quot; for a in ranked[:n]]
+
+    # ---- Level 3 -------------------------------------------------------------
+    def schedule_payment(self, timestamp: int, account_id: str, amount: int, delay: int) -&gt; str | None:
+        self._process(timestamp)
+        if account_id not in self.accounts:
+            return None
+        self.payment_count += 1
+        pid = f&quot;payment{self.payment_count}&quot;
+        due = timestamp + delay
+        self.payments[pid] = ScheduledPayment(pid, account_id, amount, due)
+        heapq.heappush(self.queue, (due, self.payment_count, pid))
+        return pid
+
+    def cancel_payment(self, timestamp: int, account_id: str, payment_id: str) -&gt; bool:
+        self._process(timestamp)                 # payments due now run before the cancel
+        p = self.payments.get(payment_id)
+        if p is None or p.owner != account_id or p.status != &quot;PENDING&quot;:
+            return False
+        p.status = &quot;CANCELED&quot;                    # lazily dropped when popped from the heap
+        return True
+
+    # ---- Level 4 -------------------------------------------------------------
+    def merge_accounts(self, timestamp: int, account_id_1: str, account_id_2: str) -&gt; bool:
+        self._process(timestamp)
+        if account_id_1 == account_id_2:
+            return False
+        if account_id_1 not in self.accounts or account_id_2 not in self.accounts:
+            return False
+        a1 = self.accounts[account_id_1]
+        a2 = self.accounts.pop(account_id_2)
+        a1.balance += a2.balance
+        a1.outgoing += a2.outgoing
+        for p in self.payments.values():         # pending payments now charge account 1
+            if p.owner == account_id_2:
+                p.owner = account_id_1
+        self._log(account_id_1, timestamp, a1.balance)
+        self._log(account_id_2, timestamp, None)
+        return True
+
+    def get_balance(self, timestamp: int, account_id: str, time_at: int) -&gt; int | None:
+        self._process(timestamp)
+        history = self.history.get(account_id)
+        return history.at(time_at) if history else None</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start banking_scheduled</code></p>
+</article>
+
+<article class="prob" id="p-cloud_storage">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">3</span>
+      <h3>Cloud Storage <span class="sub">users, merge, backup</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-hot">Very common</span>
+      <button type="button" class="done" id="done-cloud_storage" data-id="cloud_storage" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Reported for Ramp, Anthropic and Dropbox assessments.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">add_file, get_file_size, delete_file</span></li><li><span class="lv l2">L2</span><span class="lv-text">get_n_largest(prefix, n) as [&quot;name(size)&quot;]: size desc, name asc</span></li><li><span class="lv l3">L3</span><span class="lv-text">add_user(capacity), add_file_by returns remaining capacity, merge_user (capacities add, files move)</span></li><li><span class="lv l4">L4</span><span class="lv-text">backup_user / restore_user (skip names now owned by someone else)</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Treat admin as a user with capacity None so every add goes through one helper.</li><li>Deleting a file frees its owner&#x27;s capacity. Backups are copies, not references.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(cloud_storage_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+from cloud_storage import CloudStorage
+
+ADMIN = &quot;admin&quot;
+
+
+class File:
+    def __init__(self, name: str, size: int, owner: str):
+        self.name = name
+        self.size = size
+        self.owner = owner
+
+
+class User:
+    def __init__(self, user_id: str, capacity: int | None):
+        self.id = user_id
+        self.capacity = capacity            # None = unlimited (admin)
+        self.used = 0
+        self.files: set[str] = set()
+        self.backup: dict[str, int] | None = None
+
+    def remaining(self) -&gt; int | None:
+        return None if self.capacity is None else self.capacity - self.used
+
+
+class CloudStorageImpl(CloudStorage):
+
+    def __init__(self):
+        self.files: dict[str, File] = {}
+        self.users: dict[str, User] = {ADMIN: User(ADMIN, None)}
+
+    # ---- primitives shared by every level -----------------------------------
+    def _add(self, user_id: str, name: str, size: int) -&gt; bool:
+        user = self.users.get(user_id)
+        if user is None or name in self.files:
+            return False
+        if user.capacity is not None and user.used + size &gt; user.capacity:
+            return False
+        self.files[name] = File(name, size, user_id)
+        user.used += size
+        user.files.add(name)
+        return True
+
+    def _delete(self, name: str) -&gt; int | None:
+        f = self.files.pop(name, None)
+        if f is None:
+            return None
+        owner = self.users[f.owner]
+        owner.used -= f.size
+        owner.files.discard(name)
+        return f.size
+
+    # ---- Level 1 -------------------------------------------------------------
+    def add_file(self, name: str, size: int) -&gt; bool:
+        return self._add(ADMIN, name, size)
+
+    def get_file_size(self, name: str) -&gt; int | None:
+        f = self.files.get(name)
+        return f.size if f else None
+
+    def delete_file(self, name: str) -&gt; int | None:
+        return self._delete(name)
+
+    # ---- Level 2 -------------------------------------------------------------
+    def get_n_largest(self, prefix: str, n: int) -&gt; list[str]:
+        matches = [f for f in self.files.values() if f.name.startswith(prefix)]
+        matches.sort(key=lambda f: (-f.size, f.name))
+        return [f&quot;{f.name}({f.size})&quot; for f in matches[:n]]
+
+    # ---- Level 3 -------------------------------------------------------------
+    def add_user(self, user_id: str, capacity: int) -&gt; bool:
+        if user_id in self.users:
+            return False
+        self.users[user_id] = User(user_id, capacity)
+        return True
+
+    def add_file_by(self, user_id: str, name: str, size: int) -&gt; int | None:
+        if not self._add(user_id, name, size):
+            return None
+        return self.users[user_id].remaining()
+
+    def merge_user(self, user_id_1: str, user_id_2: str) -&gt; int | None:
+        if user_id_1 == user_id_2 or user_id_1 not in self.users or user_id_2 not in self.users:
+            return None
+        u1 = self.users[user_id_1]
+        u2 = self.users.pop(user_id_2)          # its backup disappears with it
+        for name in u2.files:
+            self.files[name].owner = user_id_1
+        u1.files |= u2.files
+        u1.used += u2.used
+        u1.capacity += u2.capacity
+        return u1.remaining()
+
+    # ---- Level 4 -------------------------------------------------------------
+    def backup_user(self, user_id: str) -&gt; int | None:
+        user = self.users.get(user_id)
+        if user is None:
+            return None
+        user.backup = {name: self.files[name].size for name in user.files}   # copy, not a reference
+        return len(user.backup)
+
+    def restore_user(self, user_id: str) -&gt; int | None:
+        user = self.users.get(user_id)
+        if user is None:
+            return None
+        for name in list(user.files):            # copy: _delete mutates user.files
+            self._delete(name)
+        restored = 0
+        for name, size in sorted((user.backup or {}).items()):
+            if name in self.files:               # taken by someone else meanwhile
+                continue
+            self.files[name] = File(name, size, user_id)
+            user.used += size
+            user.files.add(name)
+            restored += 1
+        return restored</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start cloud_storage</code></p>
+</article>
+
+<article class="prob" id="p-cloud_storage_v2">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">4</span>
+      <h3>Cloud Storage v2 <span class="sub">quotas + compression</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-warm">Reported variant</span>
+      <button type="button" class="done" id="done-cloud_storage_v2" data-id="cloud_storage_v2" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Variant with copy, prefix+suffix search, capacity updates and compression.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">add_file, copy_file (no overwrite), get_file_size</span></li><li><span class="lv l2">L2</span><span class="lv-text">find_file(prefix, suffix)</span></li><li><span class="lv l3">L3</span><span class="lv-text">add_user, add_file_by, update_capacity (evict largest, ties by name) returns the count removed</span></li><li><span class="lv l4">L4</span><span class="lv-text">compress_file (&quot;.COMPRESSED&quot;, half size) and decompress_file</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Decompression capacity check uses the size difference.</li><li>update_capacity returns how many files were deleted, not the remaining capacity.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(cloud_storage_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+from cloud_storage import CloudStorage
+
+ADMIN = &quot;admin&quot;
+SUFFIX = &quot;.COMPRESSED&quot;
+
+
+class File:
+    def __init__(self, name: str, size: int, owner: str, original_size: int | None = None):
+        self.name = name
+        self.size = size
+        self.owner = owner
+        self.original_size = original_size    # set only for compressed files
+
+
+class User:
+    def __init__(self, user_id: str, capacity: int | None):
+        self.id = user_id
+        self.capacity = capacity              # None = unlimited (admin)
+        self.used = 0
+
+    def fits(self, extra: int) -&gt; bool:
+        return self.capacity is None or self.used + extra &lt;= self.capacity
+
+    def remaining(self) -&gt; int | None:
+        return None if self.capacity is None else self.capacity - self.used
+
+
+class CloudStorageImpl(CloudStorage):
+
+    def __init__(self):
+        self.files: dict[str, File] = {}
+        self.users: dict[str, User] = {ADMIN: User(ADMIN, None)}
+
+    # ---- primitives ----------------------------------------------------------
+    def _put(self, f: File) -&gt; None:
+        self.files[f.name] = f
+        self.users[f.owner].used += f.size
+
+    def _remove(self, name: str) -&gt; File:
+        f = self.files.pop(name)
+        self.users[f.owner].used -= f.size
+        return f
+
+    def _owned(self, user_id: str, name: str) -&gt; File | None:
+        f = self.files.get(name)
+        if user_id not in self.users or f is None or f.owner != user_id:
+            return None
+        return f
+
+    # ---- Level 1 -------------------------------------------------------------
+    def add_file(self, name: str, size: int) -&gt; bool:
+        if name in self.files:
+            return False
+        self._put(File(name, size, ADMIN))
+        return True
+
+    def copy_file(self, name_from: str, name_to: str) -&gt; bool:
+        src = self.files.get(name_from)
+        if src is None or name_to in self.files:
+            return False
+        if not self.users[src.owner].fits(src.size):
+            return False
+        self._put(File(name_to, src.size, src.owner, src.original_size))
+        return True
+
+    def get_file_size(self, name: str) -&gt; int | None:
+        f = self.files.get(name)
+        return f.size if f else None
+
+    # ---- Level 2 -------------------------------------------------------------
+    def find_file(self, prefix: str, suffix: str) -&gt; list[str]:
+        matches = [f for f in self.files.values() if f.name.startswith(prefix) and f.name.endswith(suffix)]
+        matches.sort(key=lambda f: (-f.size, f.name))
+        return [f&quot;{f.name}({f.size})&quot; for f in matches]
+
+    # ---- Level 3 -------------------------------------------------------------
+    def add_user(self, user_id: str, capacity: int) -&gt; bool:
+        if user_id in self.users:
+            return False
+        self.users[user_id] = User(user_id, capacity)
+        return True
+
+    def add_file_by(self, user_id: str, name: str, size: int) -&gt; int | None:
+        user = self.users.get(user_id)
+        if user is None or name in self.files or not user.fits(size):
+            return None
+        self._put(File(name, size, user_id))
+        return user.remaining()
+
+    def update_capacity(self, user_id: str, capacity: int) -&gt; int | None:
+        user = self.users.get(user_id)
+        if user is None:
+            return None
+        user.capacity = capacity
+        mine = sorted((f for f in self.files.values() if f.owner == user_id), key=lambda f: (-f.size, f.name))
+        removed = 0
+        for f in mine:
+            if user.used &lt;= capacity:
+                break
+            self._remove(f.name)
+            removed += 1
+        return removed
+
+    # ---- Level 4 -------------------------------------------------------------
+    def compress_file(self, user_id: str, name: str) -&gt; int | None:
+        f = self._owned(user_id, name)
+        if f is None or name.endswith(SUFFIX) or name + SUFFIX in self.files:
+            return None
+        self._remove(name)
+        self._put(File(name + SUFFIX, f.size // 2, user_id, original_size=f.size))
+        return self.users[user_id].remaining()
+
+    def decompress_file(self, user_id: str, name: str) -&gt; int | None:
+        f = self._owned(user_id, name)
+        if f is None or not name.endswith(SUFFIX) or f.original_size is None:
+            return None
+        original = name[: -len(SUFFIX)]
+        user = self.users[user_id]
+        if original in self.files or not user.fits(f.original_size - f.size):
+            return None
+        self._remove(name)
+        self._put(File(original, f.original_size, user_id))
+        return user.remaining()</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start cloud_storage_v2</code></p>
+</article>
+
+<article class="prob" id="p-file_hosting_ttl">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">5</span>
+      <h3>File Hosting <span class="sub">TTL + rollback</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-cool">Seen in mocks</span>
+      <button type="button" class="done" id="done-file_hosting_ttl" data-id="file_hosting_ttl" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Shape of the public CodeSignal-style mock: exceptions, top-10 search, TTL, rollback.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">file_upload (raise if exists), file_get, file_copy (raise if missing; overwrite)</span></li><li><span class="lv l2">L2</span><span class="lv-text">file_search(prefix): top 10 names by size desc, then name</span></li><li><span class="lv l3">L3</span><span class="lv-text">*_at versions; files with ttl live during [t, t + ttl)</span></li><li><span class="lv l4">L4</span><span class="lv-text">rollback(timestamp, time_to): restore the state at time_to, keeping remaining TTLs</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Some operations must RAISE instead of returning a value.</li><li>A copy keeps the source&#x27;s absolute expiry. Record a snapshot after every change, including the rollback.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(file_hosting_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+import bisect
+
+from file_hosting import FileHosting
+
+SEARCH_LIMIT = 10
+
+
+class FileHostingImpl(FileHosting):
+    &quot;&quot;&quot;
+    State: name -&gt; (size, expires_at or None).
+    Every timestamped change also appends a snapshot (time, copy of state) so
+    rollback can find &quot;the state at time T&quot; with a binary search.
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.files: dict[str, tuple[int, int | None]] = {}
+        self.snap_times: list[int] = []
+        self.snaps: list[dict[str, tuple[int, int | None]]] = []
+
+    # ---- helpers ---------------------------------------------------------------
+    def _alive(self, name: str, timestamp: int | None) -&gt; tuple[int, int | None] | None:
+        rec = self.files.get(name)
+        if rec is None:
+            return None
+        expires = rec[1]
+        if timestamp is not None and expires is not None and timestamp &gt;= expires:
+            return None
+        return rec
+
+    def _save(self, timestamp: int) -&gt; None:
+        self.snap_times.append(timestamp)
+        self.snaps.append(dict(self.files))       # values are immutable tuples -&gt; shallow copy is enough
+
+    def _search(self, prefix: str, timestamp: int | None) -&gt; list[str]:
+        hits = []
+        for name in self.files:
+            rec = self._alive(name, timestamp)
+            if rec is not None and name.startswith(prefix):
+                hits.append((rec[0], name))
+        hits.sort(key=lambda sn: (-sn[0], sn[1]))
+        return [name for _, name in hits[:SEARCH_LIMIT]]
+
+    # ---- Level 1 ---------------------------------------------------------------
+    def file_upload(self, file_name: str, size: int) -&gt; None:
+        if file_name in self.files:
+            raise RuntimeError(f&quot;file {file_name} already exists&quot;)
+        self.files[file_name] = (size, None)
+
+    def file_get(self, file_name: str) -&gt; int | None:
+        rec = self.files.get(file_name)
+        return rec[0] if rec else None
+
+    def file_copy(self, source: str, dest: str) -&gt; None:
+        if source not in self.files:
+            raise RuntimeError(f&quot;file {source} not found&quot;)
+        self.files[dest] = self.files[source]
+
+    # ---- Level 2 ---------------------------------------------------------------
+    def file_search(self, prefix: str) -&gt; list[str]:
+        return self._search(prefix, None)
+
+    # ---- Level 3 ---------------------------------------------------------------
+    def file_upload_at(self, timestamp: int, file_name: str, file_size: int, ttl: int | None = None) -&gt; None:
+        if self._alive(file_name, timestamp) is not None:
+            raise RuntimeError(f&quot;file {file_name} already exists&quot;)
+        self.files[file_name] = (file_size, None if ttl is None else timestamp + ttl)
+        self._save(timestamp)
+
+    def file_get_at(self, timestamp: int, file_name: str) -&gt; int | None:
+        rec = self._alive(file_name, timestamp)
+        return rec[0] if rec else None
+
+    def file_copy_at(self, timestamp: int, source: str, dest: str) -&gt; None:
+        rec = self._alive(source, timestamp)
+        if rec is None:
+            raise RuntimeError(f&quot;file {source} not found&quot;)
+        self.files[dest] = rec                     # same size, same expiry moment
+        self._save(timestamp)
+
+    def file_search_at(self, timestamp: int, prefix: str) -&gt; list[str]:
+        return self._search(prefix, timestamp)
+
+    # ---- Level 4 ---------------------------------------------------------------
+    def rollback(self, timestamp: int, time_to: int) -&gt; None:
+        i = bisect.bisect_right(self.snap_times, time_to)   # last snapshot taken at or before time_to
+        base = self.snaps[i - 1] if i else {}
+        restored: dict[str, tuple[int, int | None]] = {}
+        for name, (size, expires) in base.items():
+            if expires is None:
+                restored[name] = (size, None)
+            elif expires &gt; time_to:                           # alive at time_to
+                restored[name] = (size, timestamp + (expires - time_to))
+        self.files = restored
+        self._save(timestamp)</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start file_hosting_ttl</code></p>
+</article>
+
+<article class="prob" id="p-in_memory_db">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">6</span>
+      <h3>In-Memory Database <span class="sub">TTL + backup/restore</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-hot">Very common</span>
+      <button type="button" class="done" id="done-in_memory_db" data-id="in_memory_db" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Reported for Anthropic, Ramp, eBay and Coinbase assessments.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">set, get, delete on record -&gt; field -&gt; value</span></li><li><span class="lv l2">L2</span><span class="lv-text">scan, scan_by_prefix as [&quot;field(value)&quot;] sorted by field</span></li><li><span class="lv l3">L3</span><span class="lv-text">set_at, set_at_with_ttl, get_at, delete_at, scan_at, scan_by_prefix_at (timestamp is the LAST argument)</span></li><li><span class="lv l4">L4</span><span class="lv-text">backup(ts) returns the live record count; restore(ts, ts_to_restore) recalculates TTLs</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Back up the REMAINING ttl, then expire at restore_time + remaining.</li><li>Use the latest backup at or before the target (bisect_right - 1). Restore into new dicts.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(in_memory_db_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+import bisect
+
+from in_memory_db import InMemoryDB
+
+# A field is stored as (value, expires_at) where expires_at is None for &quot;never&quot;.
+Entry = tuple
+
+
+class InMemoryDBImpl(InMemoryDB):
+
+    def __init__(self):
+        self.data: dict[str, dict[str, Entry]] = {}
+        self.backup_times: list[int] = []
+        self.backups: list[dict[str, dict[str, tuple[str, int | None]]]] = []   # remaining TTLs
+
+    # ---- core helpers (timestamp None = &quot;ignore expiry&quot;, used by Level 1-2) --
+    @staticmethod
+    def _alive(entry: Entry, timestamp: int | None) -&gt; bool:
+        expires = entry[1]
+        return timestamp is None or expires is None or timestamp &lt; expires
+
+    def _set(self, key: str, field: str, value: str, expires: int | None) -&gt; None:
+        self.data.setdefault(key, {})[field] = (value, expires)
+
+    def _get(self, key: str, field: str, timestamp: int | None) -&gt; str | None:
+        entry = self.data.get(key, {}).get(field)
+        if entry is None or not self._alive(entry, timestamp):
+            return None
+        return entry[0]
+
+    def _delete(self, key: str, field: str, timestamp: int | None) -&gt; bool:
+        if self._get(key, field, timestamp) is None:
+            return False
+        record = self.data[key]
+        del record[field]
+        if not record:
+            del self.data[key]
+        return True
+
+    def _scan(self, key: str, prefix: str, timestamp: int | None) -&gt; list[str]:
+        record = self.data.get(key, {})
+        fields = sorted(f for f, e in record.items() if f.startswith(prefix) and self._alive(e, timestamp))
+        return [f&quot;{f}({record[f][0]})&quot; for f in fields]
+
+    # ---- Level 1 ---------------------------------------------------------------
+    def set(self, key: str, field: str, value: str) -&gt; None:
+        self._set(key, field, value, None)
+
+    def get(self, key: str, field: str) -&gt; str | None:
+        return self._get(key, field, None)
+
+    def delete(self, key: str, field: str) -&gt; bool:
+        return self._delete(key, field, None)
+
+    # ---- Level 2 ---------------------------------------------------------------
+    def scan(self, key: str) -&gt; list[str]:
+        return self._scan(key, &quot;&quot;, None)
+
+    def scan_by_prefix(self, key: str, prefix: str) -&gt; list[str]:
+        return self._scan(key, prefix, None)
+
+    # ---- Level 3 ---------------------------------------------------------------
+    def set_at(self, key: str, field: str, value: str, timestamp: int) -&gt; None:
+        self._set(key, field, value, None)
+
+    def set_at_with_ttl(self, key: str, field: str, value: str, timestamp: int, ttl: int) -&gt; None:
+        self._set(key, field, value, timestamp + ttl)
+
+    def delete_at(self, key: str, field: str, timestamp: int) -&gt; bool:
+        return self._delete(key, field, timestamp)
+
+    def get_at(self, key: str, field: str, timestamp: int) -&gt; str | None:
+        return self._get(key, field, timestamp)
+
+    def scan_at(self, key: str, timestamp: int) -&gt; list[str]:
+        return self._scan(key, &quot;&quot;, timestamp)
+
+    def scan_by_prefix_at(self, key: str, prefix: str, timestamp: int) -&gt; list[str]:
+        return self._scan(key, prefix, timestamp)
+
+    # ---- Level 4 ---------------------------------------------------------------
+    def backup(self, timestamp: int) -&gt; int:
+        snapshot: dict[str, dict[str, tuple[str, int | None]]] = {}
+        for key, record in self.data.items():
+            saved = {}
+            for field, (value, expires) in record.items():
+                if self._alive((value, expires), timestamp):
+                    saved[field] = (value, None if expires is None else expires - timestamp)
+            if saved:
+                snapshot[key] = saved
+        self.backup_times.append(timestamp)
+        self.backups.append(snapshot)
+        return len(snapshot)
+
+    def restore(self, timestamp: int, timestamp_to_restore: int) -&gt; None:
+        i = bisect.bisect_right(self.backup_times, timestamp_to_restore) - 1   # latest backup &lt;= target
+        snapshot = self.backups[i]
+        self.data = {
+            key: {field: (value, None if remaining is None else timestamp + remaining)
+                  for field, (value, remaining) in record.items()}
+            for key, record in snapshot.items()
+        }</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start in_memory_db</code></p>
+</article>
+
+<article class="prob" id="p-worker_hours">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">7</span>
+      <h3>Worker Hours &amp; Payroll</h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-warm">Reported</span>
+      <button type="button" class="done" id="done-worker_hours" data-id="worker_hours" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Payroll / office-hours problem (reported for Ramp).</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">add_worker, register (toggles in/out), get (finished sessions only)</span></li><li><span class="lv l2">L2</span><span class="lv-text">top_n_workers(n, position)</span></li><li><span class="lv l3">L3</span><span class="lv-text">promote (active from the first entry at or after start), calc_salary over a window</span></li><li><span class="lv l4">L4</span><span class="lv-text">set_double_paid(start, end): merge periods, never stack</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>A pending promotion applies inside register when the worker ENTERS.</li><li>top_n_workers counts only time in the current position.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(worker_registry_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+from worker_registry import WorkerRegistry
+
+
+class Session:
+    def __init__(self, start: int, end: int, position: str, compensation: int):
+        self.start = start
+        self.end = end
+        self.position = position
+        self.compensation = compensation
+
+
+class Worker:
+    def __init__(self, worker_id: str, position: str, compensation: int):
+        self.id = worker_id
+        self.position = position
+        self.compensation = compensation
+        self.position_since = 0                       # when the current position became active
+        self.sessions: list[Session] = []             # finished sessions only
+        self.entered_at: int | None = None            # set while the worker is in the office
+        self.pending: tuple[str, int, int] | None = None   # (position, compensation, start_timestamp)
+
+    def total_time(self) -&gt; int:
+        return sum(s.end - s.start for s in self.sessions)
+
+    def time_in_current_position(self) -&gt; int:
+        return sum(s.end - s.start for s in self.sessions if s.start &gt;= self.position_since)
+
+
+def _overlap(a1: int, a2: int, b1: int, b2: int) -&gt; int:
+    return max(0, min(a2, b2) - max(a1, b1))
+
+
+class WorkerRegistryImpl(WorkerRegistry):
+
+    def __init__(self):
+        self.workers: dict[str, Worker] = {}
+        self.double_periods: list[tuple[int, int]] = []
+
+    # ---- Level 1 ---------------------------------------------------------------
+    def add_worker(self, worker_id: str, position: str, compensation: int) -&gt; bool:
+        if worker_id in self.workers:
+            return False
+        self.workers[worker_id] = Worker(worker_id, position, compensation)
+        return True
+
+    def register(self, worker_id: str, timestamp: int) -&gt; str:
+        w = self.workers.get(worker_id)
+        if w is None:
+            return &quot;invalid_request&quot;
+        if w.entered_at is None:                                  # entering
+            if w.pending is not None and timestamp &gt;= w.pending[2]:
+                w.position, w.compensation, _ = w.pending         # promotion becomes active now
+                w.position_since = timestamp
+                w.pending = None
+            w.entered_at = timestamp
+        else:                                                     # leaving
+            w.sessions.append(Session(w.entered_at, timestamp, w.position, w.compensation))
+            w.entered_at = None
+        return &quot;registered&quot;
+
+    def get(self, worker_id: str) -&gt; int | None:
+        w = self.workers.get(worker_id)
+        return w.total_time() if w else None
+
+    # ---- Level 2 ---------------------------------------------------------------
+    def top_n_workers(self, n: int, position: str) -&gt; list[str]:
+        ranked = sorted(
+            ((w.time_in_current_position(), w.id) for w in self.workers.values() if w.position == position),
+            key=lambda tw: (-tw[0], tw[1]),
+        )
+        return [f&quot;{wid}({t})&quot; for t, wid in ranked[:n]]
+
+    # ---- Level 3 ---------------------------------------------------------------
+    def promote(self, worker_id: str, new_position: str, new_compensation: int, start_timestamp: int) -&gt; str:
+        w = self.workers.get(worker_id)
+        if w is None or w.pending is not None:
+            return &quot;invalid_request&quot;
+        w.pending = (new_position, new_compensation, start_timestamp)
+        return &quot;success&quot;
+
+    def calc_salary(self, worker_id: str, start_timestamp: int, end_timestamp: int) -&gt; int | None:
+        w = self.workers.get(worker_id)
+        if w is None:
+            return None
+        doubles = self._merged_double_periods()
+        total = 0
+        for s in w.sessions:
+            a, b = max(s.start, start_timestamp), min(s.end, end_timestamp)
+            if a &gt;= b:
+                continue
+            extra = sum(_overlap(a, b, x, y) for x, y in doubles)   # double time is paid once more
+            total += s.compensation * ((b - a) + extra)
+        return total
+
+    # ---- Level 4 ---------------------------------------------------------------
+    def set_double_paid(self, start_timestamp: int, end_timestamp: int) -&gt; None:
+        self.double_periods.append((start_timestamp, end_timestamp))
+
+    def _merged_double_periods(self) -&gt; list[tuple[int, int]]:
+        merged: list[list[int]] = []
+        for x, y in sorted(self.double_periods):
+            if merged and x &lt;= merged[-1][1]:
+                merged[-1][1] = max(merged[-1][1], y)
+            else:
+                merged.append([x, y])
+        return [(x, y) for x, y in merged]</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start worker_hours</code></p>
+</article>
+
+<article class="prob" id="p-task_manager">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">8</span>
+      <h3>Task Manager <span class="sub">assignments + quotas</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-warm">Reported</span>
+      <button type="button" class="done" id="done-task_manager" data-id="task_manager" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Task management with quotas (reported for Ramp in 2026 and Airbnb).</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">add_task returns &quot;task_id_K&quot;; update_task; get_task returns a JSON string</span></li><li><span class="lv l2">L2</span><span class="lv-text">search_tasks(filter, max), list_tasks_sorted(limit): priority desc, creation asc</span></li><li><span class="lv l3">L3</span><span class="lv-text">add_user(quota), assign_task (active during [ts, finish)), get_user_tasks</span></li><li><span class="lv l4">L4</span><span class="lv-text">complete_task, get_overdue_assignments</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Never sort by id strings: &quot;task_id_10&quot; &lt; &quot;task_id_2&quot;.</li><li>Build JSON with json.dumps. Count the quota at the assignment timestamp.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(task_manager_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+import json
+
+from task_manager import TaskManager
+
+
+class Task:
+    def __init__(self, task_id: str, seq: int, name: str, priority: int):
+        self.id = task_id
+        self.seq = seq                  # creation order; never sort by the id string (&quot;task_id_10&quot; &lt; &quot;task_id_2&quot;)
+        self.name = name
+        self.priority = priority
+
+
+class Assignment:
+    def __init__(self, task_id: str, start: int, finish: int, seq: int):
+        self.task_id = task_id
+        self.start = start
+        self.finish = finish
+        self.seq = seq                  # assignment order
+        self.completed_at: int | None = None
+
+    def active(self, t: int) -&gt; bool:
+        return self.completed_at is None and self.start &lt;= t &lt; self.finish
+
+    def overdue(self, t: int) -&gt; bool:
+        return self.completed_at is None and self.finish &lt;= t
+
+
+class User:
+    def __init__(self, user_id: str, quota: int):
+        self.id = user_id
+        self.quota = quota
+        self.assignments: list[Assignment] = []
+
+
+class TaskManagerImpl(TaskManager):
+
+    def __init__(self):
+        self.tasks: dict[str, Task] = {}
+        self.users: dict[str, User] = {}
+        self.task_count = 0
+        self.assign_count = 0
+
+    def _ordered(self, tasks) -&gt; list[str]:
+        return [t.id for t in sorted(tasks, key=lambda t: (-t.priority, t.seq))]
+
+    # ---- Level 1 ---------------------------------------------------------------
+    def add_task(self, timestamp: int, name: str, priority: int) -&gt; str:
+        self.task_count += 1
+        task_id = f&quot;task_id_{self.task_count}&quot;
+        self.tasks[task_id] = Task(task_id, self.task_count, name, priority)
+        return task_id
+
+    def update_task(self, timestamp: int, task_id: str, name: str, priority: int) -&gt; bool:
+        task = self.tasks.get(task_id)
+        if task is None:
+            return False
+        task.name, task.priority = name, priority
+        return True
+
+    def get_task(self, timestamp: int, task_id: str) -&gt; str | None:
+        task = self.tasks.get(task_id)
+        if task is None:
+            return None
+        return json.dumps({&quot;name&quot;: task.name, &quot;priority&quot;: task.priority})
+
+    # ---- Level 2 ---------------------------------------------------------------
+    def search_tasks(self, timestamp: int, name_filter: str, max_results: int) -&gt; list[str]:
+        if max_results &lt;= 0:
+            return []
+        return self._ordered(t for t in self.tasks.values() if name_filter in t.name)[:max_results]
+
+    def list_tasks_sorted(self, timestamp: int, limit: int) -&gt; list[str]:
+        return self._ordered(self.tasks.values())[:max(limit, 0)]
+
+    # ---- Level 3 ---------------------------------------------------------------
+    def add_user(self, timestamp: int, user_id: str, quota: int) -&gt; bool:
+        if user_id in self.users:
+            return False
+        self.users[user_id] = User(user_id, quota)
+        return True
+
+    def assign_task(self, timestamp: int, task_id: str, user_id: str, finish_time: int) -&gt; bool:
+        user = self.users.get(user_id)
+        if user is None or task_id not in self.tasks:
+            return False
+        if sum(a.active(timestamp) for a in user.assignments) &gt;= user.quota:
+            return False
+        self.assign_count += 1
+        user.assignments.append(Assignment(task_id, timestamp, finish_time, self.assign_count))
+        return True
+
+    def get_user_tasks(self, timestamp: int, user_id: str) -&gt; list[str]:
+        user = self.users.get(user_id)
+        if user is None:
+            return []
+        active = sorted((a for a in user.assignments if a.active(timestamp)), key=lambda a: (a.finish, a.seq))
+        return [a.task_id for a in active]
+
+    # ---- Level 4 ---------------------------------------------------------------
+    def complete_task(self, timestamp: int, task_id: str, user_id: str) -&gt; bool:
+        user = self.users.get(user_id)
+        if user is None:
+            return False
+        candidates = [a for a in user.assignments if a.task_id == task_id and a.active(timestamp)]
+        if not candidates:
+            return False
+        min(candidates, key=lambda a: (a.finish, a.seq)).completed_at = timestamp
+        return True
+
+    def get_overdue_assignments(self, timestamp: int, user_id: str) -&gt; list[str]:
+        user = self.users.get(user_id)
+        if user is None:
+            return []
+        overdue = sorted((a for a in user.assignments if a.overdue(timestamp)), key=lambda a: (a.finish, a.seq))
+        return [a.task_id for a in overdue]</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start task_manager</code></p>
+</article>
+
+<article class="prob" id="p-text_editor">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">9</span>
+      <h3>Text Editor <span class="sub">cursor, clipboard, undo, documents</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-cool">Extra practice</span>
+      <button type="button" class="done" id="done-text_editor" data-id="text_editor" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Different shape: cursor and string state, plus a Level 4 encapsulation refactor.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">insert, move_cursor, delete_forward, backspace, get_cursor</span></li><li><span class="lv l2">L2</span><span class="lv-text">select, copy, paste (a selection gets replaced)</span></li><li><span class="lv l3">L3</span><span class="lv-text">undo / redo restore both text and cursor</span></li><li><span class="lv l4">L4</span><span class="lv-text">create_document / switch_document: per-document state, shared clipboard</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>One replace helper for every edit. Only record real changes.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(text_editor_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+from text_editor import TextEditor
+
+
+class Document:
+    def __init__(self):
+        self.text = &quot;&quot;
+        self.cursor = 0
+        self.selection: tuple[int, int] | None = None
+        self.undo_stack: list[tuple[str, int]] = []   # (text, cursor) before each change
+        self.redo_stack: list[tuple[str, int]] = []   # (text, cursor) after each undone change
+
+
+class TextEditorImpl(TextEditor):
+
+    def __init__(self):
+        self.docs: dict[str, Document] = {&quot;untitled&quot;: Document()}
+        self.current = &quot;untitled&quot;
+        self.clipboard = &quot;&quot;
+
+    @property
+    def doc(self) -&gt; Document:
+        return self.docs[self.current]
+
+    # ---- the one place where text changes -------------------------------------
+    def _replace(self, start: int, end: int, new: str, cursor_after: int) -&gt; str:
+        d = self.doc
+        text = d.text[:start] + new + d.text[end:]
+        if text != d.text:                           # only real changes are undoable
+            d.undo_stack.append((d.text, d.cursor))
+            d.redo_stack.clear()
+            d.text = text
+            d.cursor = cursor_after
+        d.selection = None
+        return d.text
+
+    def _clamp(self, p: int) -&gt; int:
+        return max(0, min(p, len(self.doc.text)))
+
+    # ---- Level 1 ---------------------------------------------------------------
+    def insert(self, text: str) -&gt; str:
+        d = self.doc
+        start, end = d.selection or (d.cursor, d.cursor)
+        return self._replace(start, end, text, start + len(text))
+
+    def move_cursor(self, position: int) -&gt; str:
+        self.doc.cursor = self._clamp(position)
+        self.doc.selection = None
+        return self.doc.text
+
+    def delete_forward(self) -&gt; str:
+        d = self.doc
+        if d.selection:
+            start, end = d.selection
+            return self._replace(start, end, &quot;&quot;, start)
+        return self._replace(d.cursor, min(d.cursor + 1, len(d.text)), &quot;&quot;, d.cursor)
+
+    def backspace(self) -&gt; str:
+        d = self.doc
+        if d.selection:
+            start, end = d.selection
+            return self._replace(start, end, &quot;&quot;, start)
+        start = max(d.cursor - 1, 0)
+        return self._replace(start, d.cursor, &quot;&quot;, start)
+
+    def get_cursor(self) -&gt; int:
+        return self.doc.cursor
+
+    # ---- Level 2 ---------------------------------------------------------------
+    def select(self, left: int, right: int) -&gt; str:
+        d = self.doc
+        left, right = sorted((self._clamp(left), self._clamp(right)))
+        d.cursor = right
+        d.selection = (left, right) if left &lt; right else None
+        return d.text[left:right]
+
+    def copy(self) -&gt; str:
+        d = self.doc
+        if d.selection:
+            start, end = d.selection
+            self.clipboard = d.text[start:end]
+        return self.clipboard
+
+    def paste(self) -&gt; str:
+        return self.insert(self.clipboard)
+
+    # ---- Level 3 ---------------------------------------------------------------
+    def undo(self) -&gt; str:
+        d = self.doc
+        if d.undo_stack:
+            d.redo_stack.append((d.text, d.cursor))
+            d.text, d.cursor = d.undo_stack.pop()
+        d.selection = None
+        return d.text
+
+    def redo(self) -&gt; str:
+        d = self.doc
+        if d.redo_stack:
+            d.undo_stack.append((d.text, d.cursor))
+            d.text, d.cursor = d.redo_stack.pop()
+        d.selection = None
+        return d.text
+
+    # ---- Level 4 ---------------------------------------------------------------
+    def create_document(self, name: str) -&gt; bool:
+        if name in self.docs:
+            return False
+        self.docs[name] = Document()
+        return True
+
+    def switch_document(self, name: str) -&gt; str | None:
+        if name not in self.docs:
+            return None
+        self.current = name
+        return self.doc.text</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start text_editor</code></p>
+</article>
+
+<article class="prob" id="p-job_scheduler">
+  <div class="prob-head">
+    <div class="prob-title">
+      <span class="prob-num">10</span>
+      <h3>Job Scheduler <span class="sub">priorities + dependencies</span></h3>
+    </div>
+    <div class="prob-meta">
+      <span class="chip chip-cool">Extra practice</span>
+      <button type="button" class="done" id="done-job_scheduler" data-id="job_scheduler" aria-pressed="false">Mark practiced</button>
+    </div>
+  </div>
+  <p class="reported">Different shape: priority queue plus a dependency graph.</p>
+  <ol class="levels"><li><span class="lv l1">L1</span><span class="lv-text">add_job, next_job (priority desc, FIFO), complete_job, get_status</span></li><li><span class="lv l2">L2</span><span class="lv-text">peek_jobs, jobs_with_status</span></li><li><span class="lv l3">L3</span><span class="lv-text">add_dependency with cycle detection; blocked vs queued</span></li><li><span class="lv l4">L4</span><span class="lv-text">cancel_job cascades to every dependent</span></li></ol>
+  <div class="traps"><span class="tag">Watch for</span><ul><li>Derive queued/blocked on demand. DFS for cycles, BFS for the cascade.</li></ul></div>
+  <details>
+    <summary>Reference solution <span class="muted">(job_scheduler_impl.py, passes every kit test)</span></summary>
+    <pre><code class="language-python">from __future__ import annotations
+
+from collections import deque
+
+from job_scheduler import JobScheduler
+
+PENDING, RUNNING, DONE, CANCELED = &quot;pending&quot;, &quot;running&quot;, &quot;done&quot;, &quot;canceled&quot;
+
+
+class Job:
+    def __init__(self, job_id: str, priority: int, seq: int):
+        self.id = job_id
+        self.priority = priority
+        self.seq = seq                         # insertion order for tie-breaks
+        self.state = PENDING                   # pending = not started, not canceled
+        self.prereqs: set[str] = set()         # jobs this one waits for
+        self.dependents: set[str] = set()      # jobs waiting for this one
+
+
+class JobSchedulerImpl(JobScheduler):
+
+    def __init__(self):
+        self.jobs: dict[str, Job] = {}
+        self.count = 0
+
+    # ---- helpers ---------------------------------------------------------------
+    def _ready(self, job: Job) -&gt; bool:
+        return job.state == PENDING and all(self.jobs[p].state == DONE for p in job.prereqs)
+
+    def _status(self, job: Job) -&gt; str:
+        if job.state == PENDING:
+            return &quot;queued&quot; if self._ready(job) else &quot;blocked&quot;
+        return job.state
+
+    def _ready_in_order(self) -&gt; list[Job]:
+        return sorted((j for j in self.jobs.values() if self._ready(j)), key=lambda j: (-j.priority, j.seq))
+
+    def _depends_on(self, start: str, target: str) -&gt; bool:
+        &quot;&quot;&quot;True if `start` (transitively) waits for `target`.&quot;&quot;&quot;
+        stack, seen = [start], set()
+        while stack:
+            cur = stack.pop()
+            if cur == target:
+                return True
+            if cur in seen:
+                continue
+            seen.add(cur)
+            stack.extend(self.jobs[cur].prereqs)
+        return False
+
+    # ---- Level 1 ---------------------------------------------------------------
+    def add_job(self, job_id: str, priority: int) -&gt; bool:
+        if job_id in self.jobs:
+            return False
+        self.count += 1
+        self.jobs[job_id] = Job(job_id, priority, self.count)
+        return True
+
+    def next_job(self) -&gt; str | None:
+        ready = self._ready_in_order()
+        if not ready:
+            return None
+        ready[0].state = RUNNING
+        return ready[0].id
+
+    def complete_job(self, job_id: str) -&gt; bool:
+        job = self.jobs.get(job_id)
+        if job is None or job.state != RUNNING:
+            return False
+        job.state = DONE
+        return True
+
+    def get_status(self, job_id: str) -&gt; str | None:
+        job = self.jobs.get(job_id)
+        return self._status(job) if job else None
+
+    # ---- Level 2 ---------------------------------------------------------------
+    def peek_jobs(self, n: int) -&gt; list[str]:
+        return [j.id for j in self._ready_in_order()[:max(n, 0)]]
+
+    def jobs_with_status(self, status: str) -&gt; list[str]:
+        return sorted(j.id for j in self.jobs.values() if self._status(j) == status)
+
+    # ---- Level 3 ---------------------------------------------------------------
+    def add_dependency(self, job_id: str, prerequisite_id: str) -&gt; bool:
+        job, pre = self.jobs.get(job_id), self.jobs.get(prerequisite_id)
+        if job is None or pre is None or job is pre:
+            return False
+        if job.state != PENDING or pre.state == CANCELED or prerequisite_id in job.prereqs:
+            return False
+        if self._depends_on(prerequisite_id, job_id):   # edge would close a cycle
+            return False
+        job.prereqs.add(prerequisite_id)
+        pre.dependents.add(job_id)
+        return True
+
+    # ---- Level 4 ---------------------------------------------------------------
+    def cancel_job(self, job_id: str) -&gt; list[str]:
+        job = self.jobs.get(job_id)
+        if job is None or job.state != PENDING:
+            return []
+        canceled, queue = [], deque([job_id])
+        while queue:                                    # BFS over dependents
+            cur = self.jobs[queue.popleft()]
+            if cur.state != PENDING:
+                continue
+            cur.state = CANCELED
+            canceled.append(cur.id)
+            queue.extend(cur.dependents)
+        return sorted(canceled)</code></pre>
+  </details>
+  <p class="kit-line"><code>python3 practice.py start job_scheduler</code></p>
+</article>
+  </section>
+
+  <section id="schedule">
+    <p class="eyebrow">Practice schedule</p>
+    <h2>How to use the days you have</h2>
+    <div class="plans">
+      <div class="plan">
+        <h3>If the test is within 48 hours</h3>
+        <ol>
+          <li><strong>Take Meta's CodeSignal practice test</strong> once, to learn Run, Submit and the file tree.</li>
+          <li><strong>Timed:</strong> <code>banking_cashback</code> for the full 90 minutes, then read its reference solution.</li>
+          <li><strong>Type from memory</strong> the event-heap, History and backup/restore patterns. Then read the mistakes list.</li>
+          <li><strong>Timed:</strong> <code>cloud_storage</code>, then <code>in_memory_db</code>.</li>
+          <li><strong>Night before:</strong> skim every family's Level 3&ndash;4 lines and traps. Then sleep.</li>
+        </ol>
+      </div>
+      <div class="plan">
+        <h3>If you have a week</h3>
+        <ol>
+          <li><strong>Day 1:</strong> CodeSignal practice test, <code>integer_container</code>, read this page top to bottom.</li>
+          <li><strong>Day 2:</strong> <code>banking_cashback</code> timed, compare with the reference, redo your slowest level.</li>
+          <li><strong>Day 3:</strong> <code>cloud_storage</code> and <code>in_memory_db</code>, both timed.</li>
+          <li><strong>Day 4:</strong> <code>banking_scheduled</code> and <code>worker_hours</code>.</li>
+          <li><strong>Day 5:</strong> <code>cloud_storage_v2</code> and <code>task_manager</code>.</li>
+          <li><strong>Day 6:</strong> <code>file_hosting_ttl</code>, one of the extra shapes, then redo your worst problem from scratch.</li>
+          <li><strong>Day 7:</strong> light review: patterns from memory, mistakes list, the CodeSignal practice test again. Rest.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="kit" class="prose">
+    <p class="eyebrow">Running the kit</p>
+    <h2>Practice in the real shape</h2>
+    <p class="section-intro">Plain Python 3.8 or newer, no installs. Work only inside <code>workspace/</code>. The <code>problems/</code> folder holds future levels and solutions, so opening it spoils the practice. Each level's text is written the way CodeSignal presents a question &mdash; an intro line, the operations with full signatures, an <em>Examples</em> table of queries and explanations, and the execution limits &mdash; so the reading feels the same too.</p>
+<pre><code class="language-bash">unzip meta_fde_ica_kit.zip &amp;&amp; cd meta_fde_ica_kit
+python3 practice.py list                        # problems and your progress
+python3 practice.py start banking_cashback      # starts the 90-minute clock, shows Level 1
+# edit workspace/banking_cashback/banking_system_impl.py
+python3 practice.py test banking_cashback       # all Level 1 tests green: Level 2 unlocks
+python3 practice.py hint banking_cashback       # hints for your current level, only if stuck
+python3 practice.py status                      # elapsed time and per-level splits
+python3 practice.py solution banking_cashback   # reference solution, after you finish</code></pre>
+    <p style="margin-top:14px">A failing test tells you the exact call: <code>step 6: deposit(86400003, 'a', 1) returned 805, expected 806</code>. The kit's tests include each spec example, targeted edge cases, and longer randomized sequences. Every expected value was cross-checked against a second, independently written implementation.</p>
+  </section>
+
+  <section id="sources" class="prose">
+    <p class="eyebrow">Sources</p>
+    <h2>Where this comes from</h2>
+    <ol class="sources"><li><a href="https://support.codesignal.com/hc/en-us/articles/19116922232983-What-are-the-Industry-Coding-Assessment-ICA-rules" target="_blank" rel="noopener">CodeSignal: Industry Coding Assessment rules</a></li><li><a href="https://support.codesignal.com/hc/en-us/articles/15171059136407-Preparing-for-your-CodeSignal-Assessment" target="_blank" rel="noopener">CodeSignal: Preparing for your assessment</a></li><li><a href="https://support.codesignal.com/hc/en-us/articles/4407377701015-Create-a-filesystem-question-configure-automatic-scoring" target="_blank" rel="noopener">CodeSignal: Filesystem questions and unit-test scoring</a></li><li><a href="https://github.com/PaulLockett/CodeSignal_Practice_Industry_Coding_Framework" target="_blank" rel="noopener">CodeSignal ICA mock (level time budgets, instructions header)</a></li><li><a href="https://github.com/itsjoeoui/open-gauntlet" target="_blank" rel="noopener">open-gauntlet: problem families by company</a></li><li><a href="https://github.com/EricZheng0404/LibreSignal" target="_blank" rel="noopener">LibreSignal: banking, database, storage, workers specs</a></li><li><a href="https://leetcode.com/discuss/post/7302772/ebay-codesignal-oa-industry-coding-asses-wxiv/" target="_blank" rel="noopener">eBay ICA: banking system (LeetCode Discuss)</a></li><li><a href="https://www.linkjob.ai/interview-questions/coinbase-codesignal-assessment-insider-guide/" target="_blank" rel="noopener">Coinbase: banking with scheduled payments</a></li><li><a href="https://interviewfox.ai/interview-questions/ramp-codesignal-oa-guide/" target="_blank" rel="noopener">Ramp: cloud storage system</a></li><li><a href="https://www.1point3acres.com/interview/problems/company/ramp/oa-task-management-system" target="_blank" rel="noopener">Ramp: task management system (1Point3Acres)</a></li><li><a href="https://prachub.com/resources/airbnb-codesignal-industry-coding-assessment-2027-four-levels-90-minutes-scoring-and-what-comes-next" target="_blank" rel="noopener">Airbnb ICA overview (PracHub)</a></li><li><a href="https://www.1point3acres.com/interview/thread/1131541" target="_blank" rel="noopener">Meta: 90-minute CodeSignal OA before the phone screen (1Point3Acres)</a></li><li><a href="https://www.teamblind.com/post/just-gave-meta-oa-code-signal-6tg5g70a" target="_blank" rel="noopener">Meta: progressive OA experience (Blind)</a></li><li><a href="https://elijer.github.io/garden/Programming/LeetCode-Journal/16)-Code-Signal-Practice-Challenge" target="_blank" rel="noopener">Integer Container practice question notes</a></li><li><a href="https://www.fastprep.io/problems/anthropic-banking-system-part-4" target="_blank" rel="noopener">Banking merge and balance-history semantics (FastPrep)</a></li></ol>
+  </section>
+
+  <footer>Prepared September 2026. Details of the real test can change; when this page and your test screen disagree, trust the screen.</footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+(function () {
+  if (window.hljs) {
+    try { window.hljs.highlightAll(); } catch (e) { /* plain code is fine */ }
+  }
+  var KEY = "ica-playbook-practiced";
+  var done = {};
+  try { done = JSON.parse(window.localStorage.getItem(KEY) || "{}") || {}; } catch (e) { done = {}; }
+  var buttons = Array.prototype.slice.call(document.querySelectorAll("button.done"));
+  var counter = document.getElementById("done-count");
+  function paint() {
+    var n = 0;
+    buttons.forEach(function (b) {
+      var on = !!done[b.getAttribute("data-id")];
+      if (on) { n += 1; }
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.textContent = on ? "Practiced" : "Mark practiced";
+    });
+    if (counter) { counter.textContent = String(n); }
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var id = b.getAttribute("data-id");
+      if (done[id]) { delete done[id]; } else { done[id] = true; }
+      try { window.localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) { /* not saved; still works for this visit */ }
+      paint();
+    });
+  });
+  paint();
+})();
+</script>
+
+</body>
+</html>

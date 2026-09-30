@@ -1,0 +1,11 @@
+{
+  "id": "task_manager",
+  "order": 8,
+  "title": "Task Manager (assignments + quotas)",
+  "summary": "tasks with sequential ids + JSON output, search/sort by priority, users with quotas and time-windowed assignments, completion + overdue.",
+  "frequency": "reported",
+  "levels": 4,
+  "interface_module": "task_manager",
+  "impl_module": "task_manager_impl",
+  "impl_class": "TaskManagerImpl"
+}

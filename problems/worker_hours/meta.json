@@ -1,0 +1,11 @@
+{
+  "id": "worker_hours",
+  "order": 7,
+  "title": "Worker Hours & Payroll",
+  "summary": "register office entry/exit, total time, top workers by position, promotions + salary for a period, double-paid periods.",
+  "frequency": "reported",
+  "levels": 4,
+  "interface_module": "worker_registry",
+  "impl_module": "worker_registry_impl",
+  "impl_class": "WorkerRegistryImpl"
+}

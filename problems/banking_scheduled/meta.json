@@ -1,0 +1,11 @@
+{
+  "id": "banking_scheduled",
+  "order": 2,
+  "title": "Banking System (scheduled payments)",
+  "summary": "accounts/deposit/transfer, top spenders, schedule_payment/cancel_payment with delayed execution, merge + balance history.",
+  "frequency": "common",
+  "levels": 4,
+  "interface_module": "banking_system",
+  "impl_module": "banking_system_impl",
+  "impl_class": "BankingSystemImpl"
+}

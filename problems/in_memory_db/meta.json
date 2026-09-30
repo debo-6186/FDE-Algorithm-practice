@@ -1,0 +1,11 @@
+{
+  "id": "in_memory_db",
+  "order": 6,
+  "title": "In-Memory Database (TTL + backup/restore)",
+  "summary": "record/field/value set-get-delete, sorted scans with prefix, timestamped ops with TTL, backup and restore with TTL recalculation.",
+  "frequency": "very common",
+  "levels": 4,
+  "interface_module": "in_memory_db",
+  "impl_module": "in_memory_db_impl",
+  "impl_class": "InMemoryDBImpl"
+}

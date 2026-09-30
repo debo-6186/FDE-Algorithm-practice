@@ -1,0 +1,11 @@
+{
+  "id": "job_scheduler",
+  "order": 10,
+  "title": "Job Scheduler (priorities + dependencies)",
+  "summary": "priority queue of jobs, peek/list by status, dependencies with cycle detection, cascading cancel.",
+  "frequency": "extra practice",
+  "levels": 4,
+  "interface_module": "job_scheduler",
+  "impl_module": "job_scheduler_impl",
+  "impl_class": "JobSchedulerImpl"
+}

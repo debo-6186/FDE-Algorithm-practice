@@ -1,0 +1,11 @@
+{
+  "id": "text_editor",
+  "order": 9,
+  "title": "Text Editor (cursor, clipboard, undo, documents)",
+  "summary": "insert/delete at a cursor, selection + copy/paste, undo/redo, multiple documents with a shared clipboard.",
+  "frequency": "extra practice",
+  "levels": 4,
+  "interface_module": "text_editor",
+  "impl_module": "text_editor_impl",
+  "impl_class": "TextEditorImpl"
+}

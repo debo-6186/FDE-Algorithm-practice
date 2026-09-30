@@ -1,0 +1,11 @@
+{
+  "id": "cloud_storage_v2",
+  "order": 4,
+  "title": "Cloud Storage v2 (quotas + compression)",
+  "summary": "add/copy/get files, find by prefix+suffix, users with capacity + update_capacity eviction, compress/decompress.",
+  "frequency": "common",
+  "levels": 4,
+  "interface_module": "cloud_storage",
+  "impl_module": "cloud_storage_impl",
+  "impl_class": "CloudStorageImpl"
+}

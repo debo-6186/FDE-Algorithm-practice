@@ -1,0 +1,11 @@
+{
+  "id": "integer_container",
+  "order": 0,
+  "title": "Integer Container (warm-up)",
+  "summary": "add/delete, median, order statistics, undo/redo. Same shape as CodeSignal's official practice question.",
+  "frequency": "official practice",
+  "levels": 4,
+  "interface_module": "integer_container",
+  "impl_module": "integer_container_impl",
+  "impl_class": "IntegerContainerImpl"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "file_hosting_ttl",
+  "order": 5,
+  "title": "File Hosting (TTL + rollback)",
+  "summary": "upload/get/copy (raising exceptions), top-10 prefix search, timestamped ops with TTL, rollback to a past time.",
+  "frequency": "reported",
+  "levels": 4,
+  "interface_module": "file_hosting",
+  "impl_module": "file_hosting_impl",
+  "impl_class": "FileHostingImpl"
+}

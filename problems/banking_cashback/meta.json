@@ -1,0 +1,11 @@
+{
+  "id": "banking_cashback",
+  "order": 1,
+  "title": "Banking System (payments with cashback)",
+  "summary": "accounts/deposit/transfer, top spenders, pay() with 2% cashback after 24h, merge accounts + balance at a past time.",
+  "frequency": "most reported",
+  "levels": 4,
+  "interface_module": "banking_system",
+  "impl_module": "banking_system_impl",
+  "impl_class": "BankingSystemImpl"
+}

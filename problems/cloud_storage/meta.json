@@ -1,0 +1,11 @@
+{
+  "id": "cloud_storage",
+  "order": 3,
+  "title": "Cloud Storage (users, merge, backup)",
+  "summary": "add/get/delete files, n largest by prefix, users with capacity + merge, backup/restore per user.",
+  "frequency": "very common",
+  "levels": 4,
+  "interface_module": "cloud_storage",
+  "impl_module": "cloud_storage_impl",
+  "impl_class": "CloudStorageImpl"
+}
