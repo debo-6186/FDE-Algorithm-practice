@@ -5,30 +5,32 @@ from interface import WorkerRegistry
 class Worker:
     worker_id: str
     position: str
-    compensation: str
-    position_hours: int = 0
+    compensation: int
+    registry: list["RegistryEntry"] = field(default_factory=list)
+    promotions: list["Promotion"] = field(default_factory=list)
+    total_time: int = 0
+    position_time: int = 0
 
 @dataclass
-class WorkerRegistry:
-    timestamp: int = 0
-    current_state: str = ""
-    total_working_hours: int = 0
-    sessions: list[tuple[int, int, int]] = field(default_factory=list)  # (entry_ts, exit_ts, compensation)
-
-@dataclass
-class WorkerPromotion:
+class RegistryEntry:
     worker_id: str
-    promotion_status: str
-    new_position: str
-    new_salary: int
+    timestamp: int
+    type: str
+    compensation: int
+    shift_time: int
+
+@dataclass
+class Promotion:
+    worker_id: str
     start_timestamp: int
+    new_position: str
+    new_compensation: int
+    status: str
 
 class WorkerRegistryImpl(WorkerRegistry):
 
     def __init__(self):
         self.workers: dict[str, Worker] = {}
-        self.registry: dict[str, WorkerRegistry] = {}
-        self.promotions: dict[str, WorkerPromotion] = {}
 
     # @@LEVEL 1@@
     def add_worker(self, worker_id: str, position: str, compensation: int) -> bool:
@@ -39,8 +41,8 @@ class WorkerRegistryImpl(WorkerRegistry):
         if worker is not None:
             return False
         self.workers[worker_id] = Worker(worker_id, position, compensation)
-        self.registry[worker_id] = None
         return True
+        
 
     def register(self, worker_id: str, timestamp: int) -> str:
         """
@@ -50,32 +52,32 @@ class WorkerRegistryImpl(WorkerRegistry):
         worker = self.workers.get(worker_id, None)
         if worker is None:
             return "invalid_request"
-        worker_registry = self.registry.get(worker_id, None)
-        if worker_registry is None:
-            self.registry[worker_id] = WorkerRegistry(timestamp, "entry", 0)
-            self._maybe_apply_promotion(worker, timestamp)
-        elif worker_registry.current_state == "entry":
-            duration = timestamp - worker_registry.timestamp
-            worker_registry.sessions.append((worker_registry.timestamp, timestamp, worker.compensation))
-            worker_registry.total_working_hours += duration
-            worker.position_hours += duration
-            worker_registry.current_state = "exit"
-            worker_registry.timestamp = timestamp
+        worker_registries = worker.registry
+        if len(worker_registries) > 0:
+            last_entry = worker_registries[len(worker_registries) - 1]
+            if last_entry.type == "entry":
+                worker_registries.append(RegistryEntry(worker_id, timestamp, "exit", worker.compensation, (timestamp-last_entry.timestamp)))
+                worker.total_time += (timestamp - last_entry.timestamp)
+                worker.position_time += (timestamp - last_entry.timestamp)
+            else:
+                if len(worker.promotions) > 0:
+                    last_promotion = worker.promotions[-1]
+                    if last_promotion.status == "pending" and timestamp >= last_promotion.start_timestamp:
+                        last_promotion.status = "active"
+                        worker.position = last_promotion.new_position
+                        worker.compensation = last_promotion.new_compensation
+                        worker.position_time = 0
+                worker_registries.append(RegistryEntry(worker_id, timestamp, "entry", worker.compensation, 0))
         else:
-            worker_registry.current_state = "entry"
-            worker_registry.timestamp = timestamp
-            self._maybe_apply_promotion(worker, timestamp)
+            if len(worker.promotions) > 0:
+                last_promotion = worker.promotions[-1]
+                if last_promotion.status == "pending" and timestamp >= last_promotion.start_timestamp:
+                    last_promotion.status = "active"
+                    worker.position = last_promotion.new_position
+                    worker.compensation = last_promotion.new_compensation
+                    worker.position_time = 0
+            worker_registries.append(RegistryEntry(worker_id, timestamp, "entry", worker.compensation, 0))
         return "registered"
-
-    def _maybe_apply_promotion(self, worker: Worker, timestamp: int) -> None:
-        promotion = self.promotions.get(worker.worker_id, None)
-        if promotion is None or promotion.promotion_status != "pending":
-            return
-        if timestamp >= promotion.start_timestamp:
-            worker.position = promotion.new_position
-            worker.compensation = promotion.new_salary
-            worker.position_hours = 0
-            promotion.promotion_status = "active"
 
     def get(self, worker_id: str) -> int | None:
         """
@@ -84,10 +86,7 @@ class WorkerRegistryImpl(WorkerRegistry):
         worker = self.workers.get(worker_id, None)
         if worker is None:
             return None
-        worker_registry = self.registry.get(worker_id, None)
-        if worker_registry is None:
-            return 0
-        return worker_registry.total_working_hours
+        return worker.total_time
 
     # @@LEVEL 2@@
     def top_n_workers(self, n: int, position: str) -> list[str]:
@@ -95,15 +94,13 @@ class WorkerRegistryImpl(WorkerRegistry):
         Should return ["<worker_id>(<time>)", ...] for the top `n` workers with
         the given current position, by time descending, ties by id ascending.
         """
-        worker_registry_set = []
+        workers = []
         for worker_id, worker in self.workers.items():
             if worker.position == position:
-                worker_registry_set.append(worker_id)
-        worker_registry_set = sorted(
-            worker_registry_set,
-            key=lambda w: (-self.workers[w].position_hours, w),
-        )
-        return [f"{w}({self.workers[w].position_hours})" for w in worker_registry_set[:n]]
+                workers.append(worker_id)
+
+        workers.sort(key=lambda w: (-self.workers[w].position_time, w))
+        return [f"{w}({self.workers[w].position_time})" for w in workers[:n]]
 
     # @@LEVEL 3@@
     def promote(self, worker_id: str, new_position: str, new_compensation: int, start_timestamp: int) -> str:
@@ -112,25 +109,26 @@ class WorkerRegistryImpl(WorkerRegistry):
         entry at or after `start_timestamp`. Returns "success" or
         "invalid_request".
         """
-        worker = self.workers.get(worker_id)
-        if worker is None:
+        worker = self.workers.get(worker_id, None)
+        if worker is None or (len(worker.promotions) > 0 and worker.promotions[-1].status == "pending"):
             return "invalid_request"
-        promotion = self.promotions.get(worker_id, None)
-        if promotion is not None and promotion.promotion_status == "pending":
-            return "invalid_request"
-        self.promotions[worker_id] = WorkerPromotion(worker_id, "pending", new_position, new_compensation, start_timestamp)
+        worker.promotions.append(Promotion(worker_id, start_timestamp, new_position, new_compensation, "pending"))
         return "success"
 
     def calc_salary(self, worker_id: str, start_timestamp: int, end_timestamp: int) -> int | None:
+        """
+        Should return the salary for finished sessions overlapping
+        [start_timestamp, end_timestamp], or `None` if the worker doesn't exist.
+        """
         worker = self.workers.get(worker_id, None)
         if worker is None:
             return None
-        worker_registry = self.registry.get(worker_id, None)
-        if worker_registry is None:
-            return 0
-        salary = 0
-        for entry_ts, exit_ts, compensation in worker_registry.sessions:
-            overlap = min(exit_ts, end_timestamp) - max(entry_ts, start_timestamp)
-            if overlap > 0:
-                salary += overlap * compensation
-        return salary
+        total_salary = 0
+        for idx, each_registry in enumerate(worker.registry):
+            if each_registry.type == "exit":
+                entry_timestamp = worker.registry[idx - 1].timestamp
+                overlap_start = max(entry_timestamp, start_timestamp)
+                overlap_end = min(each_registry.timestamp, end_timestamp)
+                if overlap_start < overlap_end:
+                    total_salary += (overlap_end - overlap_start) * each_registry.compensation
+        return total_salary

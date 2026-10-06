@@ -181,9 +181,6 @@ class CloudStorageV2Impl(CloudStorage):
         if user is None or file is None or ".COMPRESSED" not in file.name or file.owner != user.userid:
             return None
         increased_size = file.size + file.compresed_size_saved
-        print(f"user used: {user.used}")
-        print(f"increased_size: {increased_size}")
-        print(f"increased_size: {increased_size}")
         # This file is not compressed by the program
         if file.compresed_size_saved == 0:
             return None
