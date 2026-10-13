@@ -1,0 +1,11 @@
+{
+  "id": "parcel_tracking",
+  "order": 11,
+  "title": "Parcel Tracking System (tags + hold TTL + checkpoints)",
+  "summary": "parcel/tag/value set-get-remove, sorted tag listing with prefix, timestamped tags with hold TTL, checkpoints with restore and TTL shift.",
+  "frequency": "your screenshots",
+  "levels": 4,
+  "interface_module": "parcel_tracking_system_interface",
+  "impl_module": "parcel_tracking_system",
+  "impl_class": "ParcelTrackingSystemImpl"
+}
